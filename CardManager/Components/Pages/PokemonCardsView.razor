@@ -1,4 +1,5 @@
 ﻿@* Usings *@
+@using CardManager.Models.Grading
 @using CardManager.Components.Pages.Modals
 @using CardManager.ViewModels.PokemonCollectionViewModels
 
@@ -20,6 +21,11 @@
           AllowRowClick="true"
           OnRowDoubleClick="@ViewModel.CardRowDoubleClicked"
           AllowSelection="true"
+          AllowPaging="false"
+          ItemsPerPageText=""
+          Responsive="true"
+          PaginationItemsTextFormat=""
+          PageSizeSelectorItems="pageSizeSelectors"
           SelectionMode="GridSelectionMode.Multiple">
         <GridColumn TItem="PokemonCardViewModel" HeaderText="Name" PropertyName="Name">
             @context.Name
@@ -33,8 +39,8 @@
         <GridColumn TItem="PokemonCardViewModel" HeaderText="Storage" PropertyName="StorageSpecification">
             @context.StorageSpecification
         </GridColumn>
-        <GridColumn TItem="PokemonCardViewModel" HeaderText="Grade" PropertyName="Grade">
-            @* @context.Grade *@
+        <GridColumn TItem="PokemonCardViewModel" HeaderText="Grade" PropertyName="Grading">
+            @context.Grading
         </GridColumn>
         <GridColumn TItem="PokemonCardViewModel" HeaderText="Series" PropertyName="Series">
             @context.Series

@@ -6,6 +6,8 @@ public interface IGradingInputRowViewModel<TScale> : IViewModel where TScale : s
 {
     string Identifier { get; set; }
     IEnumSelectorViewModel<TScale> SelectorViewModel { get; set; }
+
+    string ToString();
 }
 
 public class GradingInputRowViewModel<TScale>(string identifier = "") :
@@ -17,4 +19,6 @@ public class GradingInputRowViewModel<TScale>(string identifier = "") :
 
     public IEnumSelectorViewModel<TScale> SelectorViewModel { get; set; }
         = new EnumSelectorViewModel<TScale>();
+
+    public override string ToString() => SelectorViewModel?.ToString() ?? "Not Graded";
 }

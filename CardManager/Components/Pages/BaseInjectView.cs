@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using CardManager.ViewModels;
+﻿using CardManager.ViewModels;
 using Microsoft.AspNetCore.Components;
 
 namespace CardManager.Components.Pages;

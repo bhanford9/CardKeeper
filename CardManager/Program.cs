@@ -1,7 +1,6 @@
 using CardManager.Components;
 using CardManager.ViewModels;
 using CardManager.ViewModels.GradingViewModels;
-using CardManager.ViewModels.ModalViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels;
 using CardManager.ViewModels.UtilityViewModels;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -19,6 +18,7 @@ builder.Services
     .AddTransient<IPokemonCollectionViewModel, PokemonCollectionViewModel>()
     .AddTransient<IBeckettGradingViewModel, BeckettGradingViewModel>()
     .AddTransient<ICgcGradingViewModel, CgcGradingViewModel>()
+    .AddTransient<IGradingAggregateViewModel, GradingAggregateViewModel>()
     .AddTransient(typeof(IGradingInputRowViewModel<>), typeof(GradingInputRowViewModel<>))
     .AddTransient<IPsaGradingViewModel, PsaGradingViewModel>()
     //.AddTransient<IEditCardModalViewModel, EditCardModalViewModel>()

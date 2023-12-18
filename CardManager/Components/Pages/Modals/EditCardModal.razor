@@ -32,7 +32,7 @@
         <div class="grade-input">
             <div class="flex-container small-row-margin">
                 <label class="flex-child-1">Grade:</label>
-                <InputSelect class="flex-child-1" TValue="GradingHost" @bind-Value="@cardViewModel.SelectedGradingHost">
+                <InputSelect class="flex-child-1" TValue="GradingHost" @bind-Value="@cardViewModel.Grading.SelectedGradingHost">
                     @foreach (GradingHost gradingHost in Enum.GetValues<GradingHost>())
                     {
                         <option value="@gradingHost">@gradingHost</option>
@@ -42,25 +42,25 @@
 
             <div class="flex-container-col">
 
-                @if (cardViewModel.SelectedGradingHost == GradingHost.Beckett)
+                @if (cardViewModel.Grading.SelectedGradingHost == GradingHost.Beckett)
                 {
-                    <GradingInputRow TScale="BeckettScale" ViewModel="cardViewModel.BeckettGrading.Centering" />
-                    <GradingInputRow TScale="BeckettScale" ViewModel="cardViewModel.BeckettGrading.Corners" />
-                    <GradingInputRow TScale="BeckettScale" ViewModel="cardViewModel.BeckettGrading.Edges" />
-                    <GradingInputRow TScale="BeckettScale" ViewModel="cardViewModel.BeckettGrading.Surface" />
-                    <GradingInputRow TScale="BeckettScale" ViewModel="cardViewModel.BeckettGrading.Overall" />
+                    <GradingInputRow TScale="BeckettScale" ViewModel="cardViewModel.Grading.BeckettGrading.Centering" />
+                    <GradingInputRow TScale="BeckettScale" ViewModel="cardViewModel.Grading.BeckettGrading.Corners" />
+                    <GradingInputRow TScale="BeckettScale" ViewModel="cardViewModel.Grading.BeckettGrading.Edges" />
+                    <GradingInputRow TScale="BeckettScale" ViewModel="cardViewModel.Grading.BeckettGrading.Surface" />
+                    <GradingInputRow TScale="BeckettScale" ViewModel="cardViewModel.Grading.BeckettGrading.Overall" />
                 }
-                @if (cardViewModel.SelectedGradingHost == GradingHost.Cgc)
+                @if (cardViewModel.Grading.SelectedGradingHost == GradingHost.Cgc)
                 {
-                    <GradingInputRow TScale="CgcScale" ViewModel="cardViewModel.CgcGrading.Centering" />
-                    <GradingInputRow TScale="CgcScale" ViewModel="cardViewModel.CgcGrading.Corners" />
-                    <GradingInputRow TScale="CgcScale" ViewModel="cardViewModel.CgcGrading.Edges" />
-                    <GradingInputRow TScale="CgcScale" ViewModel="cardViewModel.CgcGrading.Surface" />
-                    <GradingInputRow TScale="CgcScale" ViewModel="cardViewModel.CgcGrading.Overall" />
+                    <GradingInputRow TScale="CgcScale" ViewModel="cardViewModel.Grading.CgcGrading.Centering" />
+                    <GradingInputRow TScale="CgcScale" ViewModel="cardViewModel.Grading.CgcGrading.Corners" />
+                    <GradingInputRow TScale="CgcScale" ViewModel="cardViewModel.Grading.CgcGrading.Edges" />
+                    <GradingInputRow TScale="CgcScale" ViewModel="cardViewModel.Grading.CgcGrading.Surface" />
+                    <GradingInputRow TScale="CgcScale" ViewModel="cardViewModel.Grading.CgcGrading.Overall" />
                 }
-                @if (cardViewModel.SelectedGradingHost == GradingHost.Psa)
+                @if (cardViewModel.Grading.SelectedGradingHost == GradingHost.Psa)
                 {
-                    <GradingInputRow TScale="PsaScale" ViewModel="cardViewModel.PsaGrading.Overall" />
+                    <GradingInputRow TScale="PsaScale" ViewModel="cardViewModel.Grading.PsaGrading.Overall" />
                 }
             </div>
         </div>

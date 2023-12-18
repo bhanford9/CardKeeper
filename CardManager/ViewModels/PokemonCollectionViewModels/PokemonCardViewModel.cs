@@ -8,19 +8,16 @@ namespace CardManager.ViewModels.PokemonCollectionViewModels;
 
 public interface IPokemonCardViewModel : IViewModel
 {
-    BeckettGradingViewModel BeckettGrading { get; set; }
-    CgcGradingViewModel CgcGrading { get; set; }
     int CreationYear { get; set; }
-    EnumSelectorViewModel<PokemonHolographic> Holographic { get; set; }
     Guid Id { get; set; }
     string Name { get; set; }
     string Number { get; set; }
-    PsaGradingViewModel PsaGrading { get; set; }
-    EnumSelectorViewModel<PokemonRarity> Rarity { get; set; }
-    GradingHost SelectedGradingHost { get; set; }
-    EnumSelectorViewModel<PokemonSeries> Series { get; set; }
+    IEnumSelectorViewModel<PokemonHolographic> Holographic { get; set; }
+    IEnumSelectorViewModel<PokemonRarity> Rarity { get; set; }
+    IEnumSelectorViewModel<PokemonSeries> Series { get; set; }
     IStorageSpecification StorageSpecification { get; set; }
-    EnumSelectorViewModel<ElementType> Type { get; set; }
+    IEnumSelectorViewModel<ElementType> Type { get; set; }
+    IGradingAggregateViewModel Grading { get; set; }
 }
 
 public class PokemonCardViewModel : BaseViewModel, IPokemonCardViewModel
@@ -35,19 +32,13 @@ public class PokemonCardViewModel : BaseViewModel, IPokemonCardViewModel
 
     public IStorageSpecification StorageSpecification { get; set; }
 
-    public GradingHost SelectedGradingHost { get; set; }
+    public IGradingAggregateViewModel Grading { get; set; } = new GradingAggregateViewModel();
 
-    public BeckettGradingViewModel BeckettGrading { get; set; } = new();
+    public IEnumSelectorViewModel<PokemonSeries> Series { get; set; } = new EnumSelectorViewModel<PokemonSeries>();
 
-    public CgcGradingViewModel CgcGrading { get; set; } = new();
+    public IEnumSelectorViewModel<PokemonRarity> Rarity { get; set; } = new EnumSelectorViewModel<PokemonRarity>();
 
-    public PsaGradingViewModel PsaGrading { get; set; } = new();
+    public IEnumSelectorViewModel<PokemonHolographic> Holographic { get; set; } = new EnumSelectorViewModel<PokemonHolographic>();
 
-    public EnumSelectorViewModel<PokemonSeries> Series { get; set; } = new();
-
-    public EnumSelectorViewModel<PokemonRarity> Rarity { get; set; } = new();
-
-    public EnumSelectorViewModel<PokemonHolographic> Holographic { get; set; } = new();
-
-    public EnumSelectorViewModel<ElementType> Type { get; set; } = new();
+    public IEnumSelectorViewModel<ElementType> Type { get; set; } = new EnumSelectorViewModel<ElementType>();
 }

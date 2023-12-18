@@ -8,6 +8,7 @@ public partial class PokemonCardsView : BaseInjectView<IPokemonCollectionViewMod
 {
     private EditCardModal editCardModal = new();
     private Grid<PokemonCardViewModel> cardsGrid = default!;
+    private int[] pageSizeSelectors = [10, 20, 50];
 
     protected override void OnInitialized()
     {
