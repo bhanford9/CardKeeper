@@ -1,0 +1,67 @@
+﻿@* Usings *@
+@using CardManager.Components.Pages.Modals
+@using CardManager.ViewModels.PokemonCollectionViewModels
+
+@* View Config *@
+@page "/pokemon"
+@rendermode InteractiveServer
+
+@inherits BaseInjectView<IPokemonCollectionViewModel>
+
+<PageTitle>Pokemon Cards</PageTitle>
+
+<h1>Pokemon Cards</h1>
+
+<div class="card-grid-container">
+    <Grid @ref="cardsGrid"
+          TItem="PokemonCardViewModel"
+          Class="table table-hover table-bordered table-striped"
+          DataProvider="@ViewModel.CardsDataProvider"
+          AllowRowClick="true"
+          OnRowDoubleClick="@ViewModel.CardRowDoubleClicked"
+          AllowSelection="true"
+          SelectionMode="GridSelectionMode.Multiple">
+        <GridColumn TItem="PokemonCardViewModel" HeaderText="Name" PropertyName="Name">
+            @context.Name
+        </GridColumn> 
+        <GridColumn TItem="PokemonCardViewModel" HeaderText="Number" PropertyName="Number">
+            @context.Number
+        </GridColumn>
+        <GridColumn TItem="PokemonCardViewModel" HeaderText="Year" PropertyName="CreationYear">
+            @context.CreationYear
+        </GridColumn>
+        <GridColumn TItem="PokemonCardViewModel" HeaderText="Storage" PropertyName="StorageSpecification">
+            @context.StorageSpecification
+        </GridColumn>
+        <GridColumn TItem="PokemonCardViewModel" HeaderText="Grade" PropertyName="Grade">
+            @* @context.Grade *@
+        </GridColumn>
+        <GridColumn TItem="PokemonCardViewModel" HeaderText="Series" PropertyName="Series">
+            @context.Series
+        </GridColumn>
+        <GridColumn TItem="PokemonCardViewModel" HeaderText="Rarity" PropertyName="Rarity">
+            @context.Rarity
+        </GridColumn>
+        <GridColumn TItem="PokemonCardViewModel" HeaderText="Holographic" PropertyName="Holographic">
+            @context.Holographic
+        </GridColumn>
+        <GridColumn TItem="PokemonCardViewModel" HeaderText="Type" PropertyName="Type">
+            @context.Type
+        </GridColumn>
+        <GridColumn TItem="PokemonCardViewModel" HeaderText="Edit" PropertyName="Edit">
+            <Button Color="ButtonColor.Primary"
+                    Size="Size.ExtraSmall"
+                    @onclick="@((args) => ViewModel.CardEditClicked(context))">
+                Edit
+            </Button>
+        </GridColumn>
+    </Grid>
+
+    <EditCardModal @ref="editCardModal"></EditCardModal>
+
+    <div class="card-table-buttons">
+        <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="ViewModel.AddCard">Add Card</Button>
+        <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="ViewModel.SaveTable">Save</Button>
+    </div>
+</div>
+

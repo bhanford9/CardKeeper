@@ -1,0 +1,55 @@
+/* this only applies to quick-grids in a card-grid-container */
+.card-grid-container .col-title-text {
+  font-size: 12px;
+}
+
+.card-grid-container .col-justify-start {
+  font-size: 12px;
+  margin: 0px !important;
+  padding: 0px 2px 0px 2px !important;
+}
+
+.card-grid-container .col-header-content {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.card-grid-container button.col-title {
+  margin: 0px !important;
+  padding: 0px 2px 0px 2px !important;
+}
+
+.small-row-margin {
+  margin: 0px 0px 0px 0px;
+}
+
+.flex-container {
+  display: flex;
+}
+
+.flex-container-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-child-col-1 {
+  flex: 1;
+  margin: 0px;
+}
+
+.flex-child-1 {
+  margin: 8px;
+  flex: 1;
+}
+
+.flex-child-2 {
+  flex: 2;
+}
+
+.flex-child-3 {
+  flex: 3;
+}
+
+.flex-child-4 {
+  flex: 4;
+}

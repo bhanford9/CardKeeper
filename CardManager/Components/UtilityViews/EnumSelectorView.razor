@@ -1,0 +1,13 @@
+﻿@using CardManager.Components.Pages
+@using CardManager.ViewModels.UtilityViewModels
+
+@typeparam TEnum where TEnum : struct, Enum
+
+@inherits BaseInjectView<IEnumSelectorViewModel<TEnum>>
+
+<InputSelect class="@CssClasses" TValue="TEnum" @bind-Value="@ViewModel.SelectedValue">
+    @foreach (TEnum val in Enum.GetValues<TEnum>())
+    {
+        <option value="@val">@val</option>
+    }
+</InputSelect>

@@ -1,0 +1,15 @@
+﻿@using CardManager.Components.Pages
+@using CardManager.ViewModels.GradingViewModels
+@using CardManager.ViewModels.UtilityViewModels
+
+@typeparam TScale where TScale : struct, Enum
+
+@inherits BaseInjectView<IGradingInputRowViewModel<TScale>>
+
+<div class="flex-container flex-child-col-1">
+    <div class="flex-child-2" />
+    <label class="flex-child-1">@ViewModel.Identifier:</label>
+    <EnumSelectorView CssClasses="flex-child-1"
+                      TEnum="TScale"
+                      ViewModel="@ViewModel.SelectorViewModel" />
+</div>

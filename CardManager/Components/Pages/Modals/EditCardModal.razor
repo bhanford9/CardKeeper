@@ -1,0 +1,89 @@
+﻿@* Usings *@
+@using CardManager.Components.UtilityViews
+@using CardManager.Models.Cards.PokemonCards
+@using CardManager.Models.Grading.BeckettGrading
+@using CardManager.Models.Grading.CgcGrading
+@using CardManager.Models.Grading.PsaGrading
+@using CardManager.ViewModels.ModalViewModels
+@using CardManager.ViewModels.PokemonCollectionViewModels
+@using CardManager.Models.Grading
+
+@inject IViewModelsFactory viewModelsFactory
+
+@inherits BaseView<IEditCardModalViewModel>
+
+<Modal @ref="cardModal" Title="Pokemon Card Editor" OnHidden="@ViewModel.OnHidden" IsScrollable="true">
+    <BodyTemplate>
+        <div class="flex-container small-row-margin">
+            <label class="flex-child-1">Name:</label>
+            <InputText class="flex-child-1" @bind-Value="@cardViewModel.Name"></InputText>
+        </div>
+        <div class="flex-container small-row-margin">
+            <label class="flex-child-1">Number:</label>
+            <InputText class="flex-child-1" @bind-Value="@cardViewModel.Number"></InputText>
+        </div>
+        <div class="flex-container small-row-margin">
+            <label class="flex-child-1">Year:</label>
+            <InputNumber class="flex-child-1" TValue="int" @bind-Value="@cardViewModel.CreationYear"></InputNumber>
+        </div>
+        <div class="flex-container storage-form">
+            <label class="flex-child-1">Storage Form:</label>
+        </div>
+        <div class="grade-input">
+            <div class="flex-container small-row-margin">
+                <label class="flex-child-1">Grade:</label>
+                <InputSelect class="flex-child-1" TValue="GradingHost" @bind-Value="@cardViewModel.SelectedGradingHost">
+                    @foreach (GradingHost gradingHost in Enum.GetValues<GradingHost>())
+                    {
+                        <option value="@gradingHost">@gradingHost</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="flex-container-col">
+
+                @if (cardViewModel.SelectedGradingHost == GradingHost.Beckett)
+                {
+                    <GradingInputRow TScale="BeckettScale" ViewModel="cardViewModel.BeckettGrading.Centering" />
+                    <GradingInputRow TScale="BeckettScale" ViewModel="cardViewModel.BeckettGrading.Corners" />
+                    <GradingInputRow TScale="BeckettScale" ViewModel="cardViewModel.BeckettGrading.Edges" />
+                    <GradingInputRow TScale="BeckettScale" ViewModel="cardViewModel.BeckettGrading.Surface" />
+                    <GradingInputRow TScale="BeckettScale" ViewModel="cardViewModel.BeckettGrading.Overall" />
+                }
+                @if (cardViewModel.SelectedGradingHost == GradingHost.Cgc)
+                {
+                    <GradingInputRow TScale="CgcScale" ViewModel="cardViewModel.CgcGrading.Centering" />
+                    <GradingInputRow TScale="CgcScale" ViewModel="cardViewModel.CgcGrading.Corners" />
+                    <GradingInputRow TScale="CgcScale" ViewModel="cardViewModel.CgcGrading.Edges" />
+                    <GradingInputRow TScale="CgcScale" ViewModel="cardViewModel.CgcGrading.Surface" />
+                    <GradingInputRow TScale="CgcScale" ViewModel="cardViewModel.CgcGrading.Overall" />
+                }
+                @if (cardViewModel.SelectedGradingHost == GradingHost.Psa)
+                {
+                    <GradingInputRow TScale="PsaScale" ViewModel="cardViewModel.PsaGrading.Overall" />
+                }
+            </div>
+        </div>
+        <div class="flex-container small-row-margin">
+            <label class="flex-child-1">Series:</label>
+            <EnumSelectorView CssClasses="flex-child-1" TEnum="PokemonSeries" ViewModel="@cardViewModel.Series"/>
+        </div>
+        <div class="flex-container small-row-margin">
+            <label class="flex-child-1">Rarity:</label>
+            <EnumSelectorView CssClasses="flex-child-1" TEnum="PokemonRarity" ViewModel="@cardViewModel.Rarity" />
+        </div>
+        <div class="flex-container small-row-margin">
+            <label class="flex-child-1">Holographic:</label>
+            <EnumSelectorView CssClasses="flex-child-1" TEnum="PokemonHolographic" ViewModel="@cardViewModel.Holographic"/>
+        </div>
+        <div class="flex-container small-row-margin">
+            <label class="flex-child-1">Type:</label>
+            <EnumSelectorView CssClasses="flex-child-1" TEnum="ElementType" ViewModel="@cardViewModel.Type" />
+        </div>
+
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button Color="ButtonColor.Secondary" @onclick="@ViewModel.Cancel">Cancel</Button>
+        <Button Color="ButtonColor.Primary" @onclick="@ViewModel.Submit">Save</Button>
+    </FooterTemplate>
+</Modal>
