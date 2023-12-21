@@ -1,6 +1,15 @@
 ﻿namespace CardManager.Models.Grading.CgcGrading;
 
-public class CgcGrade : ICardGrade
+public interface ICgcGrade : ICardGrade
+{
+    CgcScale Centering { get; set; }
+    CgcScale Corners { get; set; }
+    CgcScale Edges { get; set; }
+    CgcScale Overall { get; set; }
+    CgcScale Surface { get; set; }
+}
+
+public class CgcGrade : ICgcGrade
 {
     public CgcScale Centering { get; set; }
 

@@ -1,15 +1,27 @@
 ﻿using CardManager.Models.Grading;
-using CardManager.Models.StorageSpecification;
+using CardManager.Models.MonetaryData;
+using CardManager.Models.StorageSpecifications;
 
 namespace CardManager.Models.Cards;
 
-public class Card(Guid id, string name, IStorageSpecification storageSpecification, ICardGrade grade)
+public interface ICard
 {
-    public Guid Id { get; set; } = id;
+    ICardGrade Grade { get; set; }
+    Guid Id { get; set; }
+    IMonetaryData MonetaryData { get; set; }
+    string Name { get; set; }
+    IStorageSpecification StorageSpec { get; set; }
+}
 
-    public string Name { get; set; } = name;
+public class Card : ICard
+{
+    public Guid Id { get; set; } = default;
 
-    public IStorageSpecification StorageSpecification { get; set; } = storageSpecification;
+    public string Name { get; set; } = string.Empty;
 
-    public ICardGrade Grade { get; set; } = grade;
+    public IStorageSpecification StorageSpec { get; set; } = StorageSpecification.Default;
+
+    public ICardGrade Grade { get; set; } = Ungraded.Get;
+
+    public IMonetaryData MonetaryData { get; set; } = EmptyMonetaryData.Default;
 }

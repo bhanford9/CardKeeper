@@ -9,11 +9,9 @@ public interface IWebScrapingApi
     Task<IMavinScrapeOutput> Scrape(IMavinScrapingParams parameters);
 }
 
-internal class WebScrapingApi : IWebScrapingApi
+internal class WebScrapingApi(IWebScrapingExecutive executive) : IWebScrapingApi
 {
-    private readonly IWebScrapingExecutive scraper;
-
-    internal WebScrapingApi(IWebScrapingExecutive executive) => this.scraper = executive;
+    private readonly IWebScrapingExecutive scraper = executive;
 
     public async Task<IMavinScrapeOutput> Scrape(IMavinScrapingParams parameters)
     {

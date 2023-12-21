@@ -1,41 +1,46 @@
 ﻿using BlazorBootstrap;
+using CardManager.Models.Cards.PokemonCards;
 
 namespace CardManager.ViewModels.PokemonCollectionViewModels;
 
 public interface IPokemonCollectionViewModel : IViewModel
 {
-    IQueryable<PokemonCardViewModel> Cards { get; set; }
+    IQueryable<IPokemonCardViewModel> Cards { get; set; }
 
     event PokemonCollectionViewModel.EditCardPressedHandler? EditCardPressed;
     event PokemonCollectionViewModel.GridDataChangedHandler? GridDataChanged;
 
     void AddCard();
-    void CardEditClicked(PokemonCardViewModel card);
+    void CardEditClicked(IPokemonCardViewModel card);
     void SaveTable();
-    Task<GridDataProviderResult<PokemonCardViewModel>> CardsDataProvider(
-        GridDataProviderRequest<PokemonCardViewModel> request);
-    Task CardRowDoubleClicked(GridRowEventArgs<PokemonCardViewModel> args);
+    Task<GridDataProviderResult<IPokemonCardViewModel>> CardsDataProvider(
+        GridDataProviderRequest<IPokemonCardViewModel> request);
+    Task CardRowDoubleClicked(GridRowEventArgs<IPokemonCardViewModel> args);
 }
 
-public class PokemonCollectionViewModel : BaseViewModel, IPokemonCollectionViewModel
+public class PokemonCollectionViewModel(IViewModelsFactory viewModelsFactory)
+    : BaseViewModel, IPokemonCollectionViewModel
 {
-    public delegate Task EditCardPressedHandler(PokemonCardViewModel card);
+    private readonly IViewModelsFactory viewModelsFactory = viewModelsFactory;
+
+    public delegate Task EditCardPressedHandler(IPokemonCardViewModel card);
     public delegate Task GridDataChangedHandler();
 
     public event EditCardPressedHandler? EditCardPressed;
     public event GridDataChangedHandler? GridDataChanged;
 
-    public Grid<PokemonCardViewModel> GridReference { get; set; } = default!;
+    public Grid<IPokemonCardViewModel> GridReference { get; set; } = default!;
 
-    public IQueryable<PokemonCardViewModel> Cards { get; set; } = new List<PokemonCardViewModel>().AsQueryable();
+    public IQueryable<IPokemonCardViewModel> Cards { get; set; } = new List<IPokemonCardViewModel>().AsQueryable();
 
-    public async Task<GridDataProviderResult<PokemonCardViewModel>> CardsDataProvider(
-        GridDataProviderRequest<PokemonCardViewModel> request)
-        => await Task.FromResult(request.ApplyTo(Cards));
+    public async Task<GridDataProviderResult<IPokemonCardViewModel>> CardsDataProvider(
+        GridDataProviderRequest<IPokemonCardViewModel> request)
+        => await Task.FromResult(request.ApplyTo(this.Cards));
 
     public void AddCard()
     {
-        this.Cards = this.Cards.Append(new());
+        this.Cards = this.Cards.Append(
+            viewModelsFactory.NewPokemonCardViewModel(new PokemonCard()));
         this.GridDataChanged?.Invoke();
     }
 
@@ -44,9 +49,9 @@ public class PokemonCollectionViewModel : BaseViewModel, IPokemonCollectionViewM
 
     }
 
-    public void CardEditClicked(PokemonCardViewModel card) => this.EditCardPressed?.Invoke(card);
+    public void CardEditClicked(IPokemonCardViewModel card) => this.EditCardPressed?.Invoke(card);
 
-    public async Task CardRowDoubleClicked(GridRowEventArgs<PokemonCardViewModel> args)
+    public async Task CardRowDoubleClicked(GridRowEventArgs<IPokemonCardViewModel> args)
     {
         if (this.EditCardPressed != null)
         {

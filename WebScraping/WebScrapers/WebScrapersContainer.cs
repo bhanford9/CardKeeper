@@ -2,11 +2,9 @@
 using WebScraping.WebScrapers.PokemonScrapers;
 
 namespace WebScraping.WebScrapers;
-internal class WebScrapersContainer
+internal static class WebScrapersContainer
 {
-    public static void Register(IServiceCollection builder)
-    {
-        builder
+    public static IServiceCollection RegisterScrapers(this IServiceCollection builder)
+        => builder
             .AddTransient<IWebScraper, MavinScraper>();
-    }
 }

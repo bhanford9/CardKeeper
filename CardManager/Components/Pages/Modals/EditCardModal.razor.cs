@@ -1,4 +1,5 @@
 ﻿using BlazorBootstrap;
+using CardManager.Models.Cards.PokemonCards;
 using CardManager.ViewModels.ModalViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels;
 
@@ -7,7 +8,7 @@ namespace CardManager.Components.Pages.Modals;
 public partial class EditCardModal : BaseView<IEditCardModalViewModel>
 {
     private Modal cardModal = default!;
-    private PokemonCardViewModel cardViewModel = new();
+    private IPokemonCardViewModel cardViewModel = new PokemonCardViewModel(new PokemonCard());
 
     protected override void OnInitialized()
     {
@@ -16,7 +17,7 @@ public partial class EditCardModal : BaseView<IEditCardModalViewModel>
     }
 
     public async Task ShowAsync(
-        PokemonCardViewModel cardViewModel,
+        IPokemonCardViewModel cardViewModel,
         Func<Task> onSubmit = default!,
         Func<Task> onCancel = default!)
     {

@@ -7,7 +7,7 @@ namespace CardManager.Components.Pages;
 public partial class PokemonCardsView : BaseInjectView<IPokemonCollectionViewModel>, IDisposable
 {
     private EditCardModal editCardModal = new();
-    private Grid<PokemonCardViewModel> cardsGrid = default!;
+    private Grid<IPokemonCardViewModel> cardsGrid = default!;
     private int[] pageSizeSelectors = [10, 20, 50];
 
     protected override void OnInitialized()
@@ -22,10 +22,10 @@ public partial class PokemonCardsView : BaseInjectView<IPokemonCollectionViewMod
         this.ViewModel.GridDataChanged -= this.OnGridDataChanged;
     }
 
-    private async Task OnCardEditRequest(PokemonCardViewModel card)
+    private async Task OnCardEditRequest(IPokemonCardViewModel card)
     {
         // TODO --> pass by reference means cancel will save data as well
-        await editCardModal.ShowAsync(card, onSubmit: OnGridDataChanged);
+        await this.editCardModal.ShowAsync(card, onSubmit: this.OnGridDataChanged);
     }
 
     private async Task OnGridDataChanged()

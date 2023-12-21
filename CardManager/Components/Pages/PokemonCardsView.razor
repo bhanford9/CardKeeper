@@ -15,7 +15,7 @@
 
 <div class="card-grid-container">
     <Grid @ref="cardsGrid"
-          TItem="PokemonCardViewModel"
+          TItem="IPokemonCardViewModel"
           Class="table table-hover table-bordered table-striped"
           DataProvider="@ViewModel.CardsDataProvider"
           AllowRowClick="true"
@@ -27,34 +27,34 @@
           PaginationItemsTextFormat=""
           PageSizeSelectorItems="pageSizeSelectors"
           SelectionMode="GridSelectionMode.Multiple">
-        <GridColumn TItem="PokemonCardViewModel" HeaderText="Name" PropertyName="Name">
+        <GridColumn TItem="IPokemonCardViewModel" HeaderText="Name" PropertyName="Name">
             @context.Name
         </GridColumn> 
-        <GridColumn TItem="PokemonCardViewModel" HeaderText="Number" PropertyName="Number">
+        <GridColumn TItem="IPokemonCardViewModel" HeaderText="Number" PropertyName="Number">
             @context.Number
         </GridColumn>
-        <GridColumn TItem="PokemonCardViewModel" HeaderText="Year" PropertyName="CreationYear">
+        <GridColumn TItem="IPokemonCardViewModel" HeaderText="Year" PropertyName="CreationYear">
             @context.CreationYear
         </GridColumn>
-        <GridColumn TItem="PokemonCardViewModel" HeaderText="Storage" PropertyName="StorageSpecification">
-            @context.StorageSpecification
+        <GridColumn TItem="IPokemonCardViewModel" HeaderText="Storage" PropertyName="StorageSpecification">
+            @context.StorageSpec
         </GridColumn>
-        <GridColumn TItem="PokemonCardViewModel" HeaderText="Grade" PropertyName="Grading">
+        <GridColumn TItem="IPokemonCardViewModel" HeaderText="Grade" PropertyName="Grading">
             @context.Grading
         </GridColumn>
-        <GridColumn TItem="PokemonCardViewModel" HeaderText="Series" PropertyName="Series">
+        <GridColumn TItem="IPokemonCardViewModel" HeaderText="Series" PropertyName="Series">
             @context.Series
         </GridColumn>
-        <GridColumn TItem="PokemonCardViewModel" HeaderText="Rarity" PropertyName="Rarity">
+        <GridColumn TItem="IPokemonCardViewModel" HeaderText="Rarity" PropertyName="Rarity">
             @context.Rarity
         </GridColumn>
-        <GridColumn TItem="PokemonCardViewModel" HeaderText="Holographic" PropertyName="Holographic">
+        <GridColumn TItem="IPokemonCardViewModel" HeaderText="Holographic" PropertyName="Holographic">
             @context.Holographic
         </GridColumn>
-        <GridColumn TItem="PokemonCardViewModel" HeaderText="Type" PropertyName="Type">
+        <GridColumn TItem="IPokemonCardViewModel" HeaderText="Type" PropertyName="Type">
             @context.Type
         </GridColumn>
-        <GridColumn TItem="PokemonCardViewModel" HeaderText="Edit" PropertyName="Edit">
+        <GridColumn TItem="IPokemonCardViewModel" HeaderText="Edit" PropertyName="Edit">
             <Button Color="ButtonColor.Primary"
                     Size="Size.ExtraSmall"
                     @onclick="@((args) => ViewModel.CardEditClicked(context))">

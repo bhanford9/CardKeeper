@@ -1,10 +1,12 @@
 using CardManager.Components;
+using CardManager.Models;
 using CardManager.Services;
 using CardManager.ViewModels;
 using CardManager.ViewModels.GradingViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels;
 using CardManager.ViewModels.UtilityViewModels;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using WebScraping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,9 +28,9 @@ builder.Services
     //.AddTransient<IEditCardModalViewModel, EditCardModalViewModel>()
     .AddTransient<IPokemonCardViewModel, PokemonCardViewModel>()
     .AddTransient<IPokemonCollectionViewModel, PokemonCollectionViewModel>()
-    .AddTransient(typeof(IEnumSelectorViewModel<>), typeof(EnumSelectorViewModel<>));
-
-WebScraping.Container.Register(builder.Services);
+    .AddTransient(typeof(IEnumSelectorViewModel<>), typeof(EnumSelectorViewModel<>))
+    .RegisterModels()
+    .RegisterWebScraping();
 
 var app = builder.Build();
 

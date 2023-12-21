@@ -25,5 +25,5 @@ public class BeckettGradingViewModel : BaseViewModel, IBeckettGradingViewModel
 
     public GradingInputRowViewModel<BeckettScale> Overall { get; } = new("Overall");
 
-    public override string ToString() => Overall?.ToString() ?? "Not Graded";
+    public override string ToString() => this.Overall?.ToString() ?? "Not Graded";
 }

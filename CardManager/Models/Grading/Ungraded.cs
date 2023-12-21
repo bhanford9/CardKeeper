@@ -1,6 +1,8 @@
 ﻿namespace CardManager.Models.Grading;
 
-public class Ungraded : ICardGrade
+public interface IUngraded : ICardGrade { }
+
+public class Ungraded : IUngraded
 {
     public static ICardGrade Get => new Ungraded();
 }

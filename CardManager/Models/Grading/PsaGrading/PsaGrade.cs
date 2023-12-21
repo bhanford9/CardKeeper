@@ -1,6 +1,11 @@
 ﻿namespace CardManager.Models.Grading.PsaGrading;
 
-public class PsaGrade : ICardGrade
+public interface IPsaGrade : ICardGrade
+{
+    PsaScale Score { get; set; }
+}
+
+public class PsaGrade : IPsaGrade
 {
     public PsaScale Score { get; set; }
 }

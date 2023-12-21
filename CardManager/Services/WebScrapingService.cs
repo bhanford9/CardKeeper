@@ -15,6 +15,6 @@ public class WebScrapingService(IWebScrapingApi webScrapingApi) : IWebScrapingSe
 
     public async Task<IMavinScrapeOutput> Scrape(IMavinScrapingParams parameters)
     {
-        return await webScrapingApi.Scrape(parameters);
+        return await this.webScrapingApi.Scrape(parameters);
     }
 }

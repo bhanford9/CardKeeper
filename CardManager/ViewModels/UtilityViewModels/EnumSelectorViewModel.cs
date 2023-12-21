@@ -11,5 +11,5 @@ public class EnumSelectorViewModel<TScale> : BaseViewModel, IEnumSelectorViewMod
 {
     public TScale SelectedValue { get; set; } = default;
 
-    public override string ToString() => SelectedValue.ToString();
+    public override string ToString() => this.SelectedValue.ToString();
 }

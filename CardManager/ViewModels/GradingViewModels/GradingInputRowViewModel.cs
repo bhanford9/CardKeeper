@@ -20,5 +20,5 @@ public class GradingInputRowViewModel<TScale>(string identifier = "") :
     public IEnumSelectorViewModel<TScale> SelectorViewModel { get; set; }
         = new EnumSelectorViewModel<TScale>();
 
-    public override string ToString() => SelectorViewModel?.ToString() ?? "Not Graded";
+    public override string ToString() => this.SelectorViewModel?.ToString() ?? "Not Graded";
 }

@@ -1,5 +1,5 @@
 ﻿using CardManager.Models.Cards.PokemonCards;
-using CardManager.Models.StorageSpecification;
+using CardManager.Models.StorageSpecifications;
 using CardManager.ViewModels.GradingViewModels;
 using CardManager.ViewModels.UtilityViewModels;
 
@@ -14,13 +14,15 @@ public interface IPokemonCardViewModel : IViewModel
     IEnumSelectorViewModel<PokemonHolographic> Holographic { get; set; }
     IEnumSelectorViewModel<PokemonRarity> Rarity { get; set; }
     IEnumSelectorViewModel<PokemonSeries> Series { get; set; }
-    IStorageSpecification StorageSpecification { get; set; }
+    IStorageSpecification StorageSpec { get; set; }
     IEnumSelectorViewModel<ElementType> Type { get; set; }
     IGradingAggregateViewModel Grading { get; set; }
 }
 
-public class PokemonCardViewModel : BaseViewModel, IPokemonCardViewModel
+public class PokemonCardViewModel(IPokemonCard cardModel) : BaseViewModel, IPokemonCardViewModel
 {
+    private readonly IPokemonCard pokemonCardModel = cardModel;
+
     public Guid Id { get; set; }
 
     public string Name { get; set; } = string.Empty;
@@ -29,7 +31,7 @@ public class PokemonCardViewModel : BaseViewModel, IPokemonCardViewModel
 
     public int CreationYear { get; set; } = 9999;
 
-    public IStorageSpecification StorageSpecification { get; set; }
+    public IStorageSpecification StorageSpec { get; set; } = StorageSpecification.Default;
 
     public IGradingAggregateViewModel Grading { get; set; } = new GradingAggregateViewModel();
 

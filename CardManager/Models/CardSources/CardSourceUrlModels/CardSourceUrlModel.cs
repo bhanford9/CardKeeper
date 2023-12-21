@@ -13,6 +13,8 @@ public class CardSourceUrlModel : ICardSourceUrlModel
     public string Url { get; set; } = string.Empty;
 
     public ICollection<IUrlGetParameter> UrlGetParameters { get; set; } = new List<IUrlGetParameter>();
+
+    public static CardSourceUrlModel Default => new();
 }
 
 // tcgplayer.com

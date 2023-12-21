@@ -2,12 +2,10 @@
 using WebScraping.WebScrapingParameters.PokemonScrapingParameters;
 
 namespace WebScraping.WebScrapingParameters;
-internal class ScrapingParamsContainer
+internal static class ScrapingParamsContainer
 {
-    public static void Register(IServiceCollection builder)
-    {
-        builder
+    public static IServiceCollection RegisterScrapingParams(this IServiceCollection builder)
+        => builder
             .AddTransient<IWebScrapingParams, MavinScrapingParams>()
             .AddTransient<IMavinScrapingParams, MavinScrapingParams>();
-    }
 }
