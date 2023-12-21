@@ -48,9 +48,7 @@ public static class ModelsContainer
 
     private static IServiceCollection AddMonetaryData(this IServiceCollection builder)
         => builder
-            .AddTransient<IMonetaryData, EmptyMonetaryData>()
-            .AddTransient<IMonetaryData, MavinMonetaryData>()
-            .AddTransient<IEmptyMonetaryData, EmptyMonetaryData>()
+            .AddTransient<IMonetaryData, MonetaryData.MonetaryData>()
             .AddTransient<IMavinMonetaryData, MavinMonetaryData>();
 
     private static IServiceCollection AddStorageSpecifications(this IServiceCollection builder)

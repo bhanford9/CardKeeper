@@ -1,6 +1,6 @@
 ﻿namespace CardManager.Models.Cards.PokemonCards;
 
-public interface IPokemonCard
+public interface IPokemonCard : ICard
 {
     int CreationYear { get; set; }
     PokemonHolographic Holographic { get; set; }

@@ -8,10 +8,11 @@ namespace CardManager.Components.Pages.Modals;
 public partial class EditCardModal : BaseView<IEditCardModalViewModel>
 {
     private Modal cardModal = default!;
-    private IPokemonCardViewModel cardViewModel = new PokemonCardViewModel(new PokemonCard());
+    private IPokemonCardViewModel cardViewModel = default!;
 
     protected override void OnInitialized()
     {
+        this.cardViewModel = this.viewModelsFactory.NewPokemonCardViewModel(new PokemonCard());
         this.ViewModel = this.viewModelsFactory.DefaultEditCardModal();
         base.OnInitialized();
     }

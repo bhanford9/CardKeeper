@@ -1,13 +1,13 @@
 ﻿namespace CardManager.Models.MonetaryData;
 
-public interface IMavinMonetaryData : IMonetaryData
+public interface IMavinMonetaryData
 {
     double AveragePrice { get; set; }
     double MaxPrice { get; set; }
     double MinPrice { get; set; }
 }
 
-public class MavinMonetaryData : MonetaryData, IMavinMonetaryData
+public class MavinMonetaryData : IMavinMonetaryData
 {
     public double AveragePrice { get; set; }
 

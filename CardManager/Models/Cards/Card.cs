@@ -8,7 +8,7 @@ public interface ICard
 {
     ICardGrade Grade { get; set; }
     Guid Id { get; set; }
-    IMonetaryData MonetaryData { get; set; }
+    IMonetaryData Monetary { get; set; }
     string Name { get; set; }
     IStorageSpecification StorageSpec { get; set; }
 }
@@ -23,5 +23,5 @@ public class Card : ICard
 
     public ICardGrade Grade { get; set; } = Ungraded.Get;
 
-    public IMonetaryData MonetaryData { get; set; } = EmptyMonetaryData.Default;
+    public IMonetaryData Monetary { get; set; } = MonetaryData.MonetaryData.Default;
 }

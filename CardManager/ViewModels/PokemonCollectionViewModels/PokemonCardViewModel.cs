@@ -1,6 +1,7 @@
 ﻿using CardManager.Models.Cards.PokemonCards;
 using CardManager.Models.StorageSpecifications;
 using CardManager.ViewModels.GradingViewModels;
+using CardManager.ViewModels.MonetaryViewModels;
 using CardManager.ViewModels.UtilityViewModels;
 
 namespace CardManager.ViewModels.PokemonCollectionViewModels;
@@ -19,7 +20,8 @@ public interface IPokemonCardViewModel : IViewModel
     IGradingAggregateViewModel Grading { get; set; }
 }
 
-public class PokemonCardViewModel(IPokemonCard cardModel) : BaseViewModel, IPokemonCardViewModel
+public class PokemonCardViewModel(IViewModelsFactory viewModelsFactory, IPokemonCard cardModel)
+    : BaseViewModel, IPokemonCardViewModel
 {
     private readonly IPokemonCard pokemonCardModel = cardModel;
 
@@ -34,6 +36,8 @@ public class PokemonCardViewModel(IPokemonCard cardModel) : BaseViewModel, IPoke
     public IStorageSpecification StorageSpec { get; set; } = StorageSpecification.Default;
 
     public IGradingAggregateViewModel Grading { get; set; } = new GradingAggregateViewModel();
+
+    public IMonetaryAggregateViewModel MonetaryData { get; set; } = new MonetaryAggregateViewModel(viewModelsFactory, cardModel.Monetary.Mavin);
 
     public IEnumSelectorViewModel<PokemonSeries> Series { get; set; } = new EnumSelectorViewModel<PokemonSeries>();
 

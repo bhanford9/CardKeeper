@@ -16,7 +16,7 @@
 <div class="card-grid-container">
     <Grid @ref="cardsGrid"
           TItem="IPokemonCardViewModel"
-          Class="table table-hover table-bordered table-striped"
+          Class="table table-hover table-responsive table-sm"
           DataProvider="@ViewModel.CardsDataProvider"
           AllowRowClick="true"
           OnRowDoubleClick="@ViewModel.CardRowDoubleClicked"

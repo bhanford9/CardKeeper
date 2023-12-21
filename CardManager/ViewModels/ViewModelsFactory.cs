@@ -1,5 +1,7 @@
 ﻿using CardManager.Models.Cards.PokemonCards;
+using CardManager.Models.MonetaryData;
 using CardManager.ViewModels.ModalViewModels;
+using CardManager.ViewModels.MonetaryViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels;
 
 namespace CardManager.ViewModels;
@@ -8,8 +10,13 @@ public class ViewModelsFactory : IViewModelsFactory
 {
     public IEditCardModalViewModel NewEditCardModal(Func<Task> onSubmit, Func<Task> onCancel)
         => new EditCardModalViewModel(onSubmit, onCancel);
+
     public IEditCardModalViewModel DefaultEditCardModal()
         => new EditCardModalViewModel(() => { return Task.CompletedTask; }, () => { return Task.CompletedTask; });
+
     public IPokemonCardViewModel NewPokemonCardViewModel(IPokemonCard card)
-        => new PokemonCardViewModel(card);
+        => new PokemonCardViewModel(this, card);
+
+    public IMavinMonetaryViewModel NewMavinMonetaryViewModel(IMavinMonetaryData model)
+        => new MavinMonetaryViewModel(model);
 }

@@ -3,6 +3,7 @@ using CardManager.Models;
 using CardManager.Services;
 using CardManager.ViewModels;
 using CardManager.ViewModels.GradingViewModels;
+using CardManager.ViewModels.MonetaryViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels;
 using CardManager.ViewModels.UtilityViewModels;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -20,6 +21,8 @@ builder.Services
     .AddSingleton<IViewModelsFactory, ViewModelsFactory>()
     .AddSingleton<IWebScrapingService, WebScrapingService>()
     .AddTransient<IPokemonCollectionViewModel, PokemonCollectionViewModel>()
+    .AddTransient<IMavinMonetaryViewModel, MavinMonetaryViewModel>()
+    .AddTransient<IMonetaryAggregateViewModel, MonetaryAggregateViewModel>()
     .AddTransient<IBeckettGradingViewModel, BeckettGradingViewModel>()
     .AddTransient<ICgcGradingViewModel, CgcGradingViewModel>()
     .AddTransient<IGradingAggregateViewModel, GradingAggregateViewModel>()

@@ -15,4 +15,6 @@ public class StorageSpecification(IStorageMedia storageMedia, IStorageLocation s
     public IStorageLocation Location { get; set; } = storageLocation;
 
     public static StorageSpecification Default => new(StorageMedia.Default, StorageLocation.Default);
+
+    public override string ToString() => string.Empty;
 }

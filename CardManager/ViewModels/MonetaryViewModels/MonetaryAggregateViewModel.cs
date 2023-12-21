@@ -1,5 +1,16 @@
-﻿namespace CardManager.ViewModels.MonetaryViewModels;
+﻿using CardManager.Models.MonetaryData;
 
-public class MonetaryAggregateViewModel
+namespace CardManager.ViewModels.MonetaryViewModels;
+
+public interface IMonetaryAggregateViewModel
 {
+    IMavinMonetaryViewModel MonetaryViewModel { get; }
+}
+
+public class MonetaryAggregateViewModel(
+    IViewModelsFactory viewModelsFactory,
+    IMavinMonetaryData mavinModel) : IMonetaryAggregateViewModel
+{
+    public IMavinMonetaryViewModel MonetaryViewModel { get; }
+        = viewModelsFactory.NewMavinMonetaryViewModel(mavinModel);
 }
