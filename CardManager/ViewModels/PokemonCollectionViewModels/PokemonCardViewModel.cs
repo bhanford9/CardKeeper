@@ -1,5 +1,4 @@
 ﻿using CardManager.Models.Cards.PokemonCards;
-using CardManager.Models.Grading;
 using CardManager.Models.StorageSpecification;
 using CardManager.ViewModels.GradingViewModels;
 using CardManager.ViewModels.UtilityViewModels;

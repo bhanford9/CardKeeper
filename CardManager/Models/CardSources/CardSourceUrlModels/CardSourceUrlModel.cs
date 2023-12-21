@@ -21,6 +21,7 @@ public class CardSourceUrlModel : ICardSourceUrlModel
 
 // mavin.io
 // https://mavin.io/search?q=vaporeon+33%2F144&bt=sold
+// https://mavin.io/search?q=Vaporeon+33%2f144&bt=sold
 // https://mavin.io/search?q=name     number  &bt=sold
 //  <a href="#worth" id="worthBox" style="text-decoration: none;">
 //      <h5>Worth</h5>

@@ -1,4 +1,5 @@
 using CardManager.Components;
+using CardManager.Services;
 using CardManager.ViewModels;
 using CardManager.ViewModels.GradingViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels;
@@ -15,6 +16,7 @@ builder.Services.AddBlazorBootstrap();
 // Dependency Injection
 builder.Services
     .AddSingleton<IViewModelsFactory, ViewModelsFactory>()
+    .AddSingleton<IWebScrapingService, WebScrapingService>()
     .AddTransient<IPokemonCollectionViewModel, PokemonCollectionViewModel>()
     .AddTransient<IBeckettGradingViewModel, BeckettGradingViewModel>()
     .AddTransient<ICgcGradingViewModel, CgcGradingViewModel>()
@@ -26,6 +28,7 @@ builder.Services
     .AddTransient<IPokemonCollectionViewModel, PokemonCollectionViewModel>()
     .AddTransient(typeof(IEnumSelectorViewModel<>), typeof(EnumSelectorViewModel<>));
 
+WebScraping.Container.Register(builder.Services);
 
 var app = builder.Build();
 

@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardManager", "CardManager\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScraping", "WebScraping\WebScraping.csproj", "{1603A732-5C95-4683-98BB-EEA9DFA905B5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2F969E2A-02F6-4A98-A4D7-C4415559B4D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrapingTests", "WebScrapingTests\WebScrapingTests.csproj", "{F41EBD65-ED9F-4B9F-9738-E9E3F005C83B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,9 +25,16 @@ Global
 		{1603A732-5C95-4683-98BB-EEA9DFA905B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1603A732-5C95-4683-98BB-EEA9DFA905B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1603A732-5C95-4683-98BB-EEA9DFA905B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F41EBD65-ED9F-4B9F-9738-E9E3F005C83B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F41EBD65-ED9F-4B9F-9738-E9E3F005C83B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F41EBD65-ED9F-4B9F-9738-E9E3F005C83B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F41EBD65-ED9F-4B9F-9738-E9E3F005C83B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F41EBD65-ED9F-4B9F-9738-E9E3F005C83B} = {2F969E2A-02F6-4A98-A4D7-C4415559B4D8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {232BA711-5240-4FAF-9B2E-82657C30B139}
