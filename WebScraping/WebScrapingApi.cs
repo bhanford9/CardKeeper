@@ -7,6 +7,8 @@ namespace WebScraping;
 public interface IWebScrapingApi
 {
     Task<IMavinScrapeOutput> Scrape(IMavinScrapingParams parameters);
+
+    //Task Scrape(IMavinScrapingParams parameters, Action<IMavinScrapeOutput> onComplete);
 }
 
 internal class WebScrapingApi(IWebScrapingExecutive executive) : IWebScrapingApi
@@ -16,5 +18,10 @@ internal class WebScrapingApi(IWebScrapingExecutive executive) : IWebScrapingApi
     public async Task<IMavinScrapeOutput> Scrape(IMavinScrapingParams parameters)
     {
         return (await this.scraper.Scrape(parameters)).As<IMavinScrapeOutput>();
-    }
+    }    
+
+    //public async Task Scrape(IMavinScrapingParams parameters, Action<IMavinScrapeOutput> onComplete)
+    //{
+    //    onComplete(await this.Scrape(parameters));
+    //}
 }

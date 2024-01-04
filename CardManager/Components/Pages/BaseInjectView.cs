@@ -3,7 +3,13 @@ using Microsoft.AspNetCore.Components;
 
 namespace CardManager.Components.Pages;
 
-public partial class BaseView<TViewModel> : ComponentBase where TViewModel : IViewModel
+public interface IBaseView<TViewModel> where TViewModel : IViewModel
+{
+    TViewModel ViewModel { get; set; }
+    EventCallback<TViewModel> ViewModelChanged { get; set; }
+}
+
+public partial class BaseView<TViewModel> : ComponentBase, IBaseView<TViewModel> where TViewModel : IViewModel
 {
     [Parameter]
     public virtual TViewModel ViewModel { get; set; } = default!;

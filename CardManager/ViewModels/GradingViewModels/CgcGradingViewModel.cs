@@ -10,6 +10,7 @@ public interface ICgcGradingViewModel : IViewModel
     GradingInputRowViewModel<CgcScale> Overall { get; }
     GradingInputRowViewModel<CgcScale> Surface { get; }
 
+    ICgcGrade ToModel();
     string ToString();
 }
 
@@ -24,6 +25,16 @@ public class CgcGradingViewModel : BaseViewModel, ICgcGradingViewModel
     public GradingInputRowViewModel<CgcScale> Surface { get; } = new("Surface");
 
     public GradingInputRowViewModel<CgcScale> Overall { get; } = new("Overall");
+
+    public ICgcGrade ToModel() =>
+        new CgcGrade()
+        {
+            Centering = this.Centering.SelectorViewModel.SelectedValue,
+            Corners = this.Corners.SelectorViewModel.SelectedValue,
+            Edges = this.Edges.SelectorViewModel.SelectedValue,
+            Surface = this.Surface.SelectorViewModel.SelectedValue,
+            Overall = this.Overall.SelectorViewModel.SelectedValue,
+        };
 
     public override string ToString() => this.Overall?.ToString() ?? "Not Graded";
 }

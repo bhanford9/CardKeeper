@@ -4,13 +4,20 @@ namespace CardManager.ViewModels.MonetaryViewModels;
 
 public interface IMonetaryAggregateViewModel
 {
-    IMavinMonetaryViewModel MonetaryViewModel { get; }
+    IMavinMonetaryViewModel MavinViewModel { get; set; }
+
+    string ToString();
 }
 
 public class MonetaryAggregateViewModel(
     IViewModelsFactory viewModelsFactory,
     IMavinMonetaryData mavinModel) : IMonetaryAggregateViewModel
 {
-    public IMavinMonetaryViewModel MonetaryViewModel { get; }
-        = viewModelsFactory.NewMavinMonetaryViewModel(mavinModel);
+    public IMavinMonetaryViewModel MavinViewModel { get; set; }
+        = viewModelsFactory.NewMavinMonetary(mavinModel);
+
+    public override string ToString()
+    {
+        return MavinViewModel.ToString();
+    }
 }

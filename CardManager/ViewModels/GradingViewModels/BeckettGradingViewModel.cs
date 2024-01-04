@@ -10,6 +10,8 @@ public interface IBeckettGradingViewModel : IViewModel
     GradingInputRowViewModel<BeckettScale> Surface { get; }
     GradingInputRowViewModel<BeckettScale> Overall { get; }
 
+    IBeckettGrade ToModel();
+
     string ToString();
 }
 
@@ -24,6 +26,17 @@ public class BeckettGradingViewModel : BaseViewModel, IBeckettGradingViewModel
     public GradingInputRowViewModel<BeckettScale> Surface { get; } = new("Surface");
 
     public GradingInputRowViewModel<BeckettScale> Overall { get; } = new("Overall");
+
+    public IBeckettGrade ToModel() =>
+        new BeckettGrade()
+        {
+            Centering = this.Centering.SelectorViewModel.SelectedValue,
+            Corners = this.Corners.SelectorViewModel.SelectedValue,
+            Edges = this.Edges.SelectorViewModel.SelectedValue,
+            Surface = this.Surface.SelectorViewModel.SelectedValue,
+            Overall = this.Overall.SelectorViewModel.SelectedValue,
+        };
+
 
     public override string ToString() => this.Overall?.ToString() ?? "Not Graded";
 }

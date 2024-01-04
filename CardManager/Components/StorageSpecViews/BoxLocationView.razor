@@ -1,0 +1,12 @@
+﻿@using CardManager.Components.Pages
+@using CardManager.ViewModels.StorageSpecViewModels
+
+@inherits BaseView<IStorageLocationViewModel>
+
+<div class="flex-container-col">
+    <div class="flex-container small-row-margin flex-child-col-1">
+        <div class="flex-child-1" />
+        <label class="flex-child-1">Description:</label>
+        <InputText class="flex-child-1" @bind-Value="@boxViewModel.Description" />
+    </div>
+</div>

@@ -2,6 +2,7 @@
 using CardManager.Models.StorageSpecifications.Media;
 
 namespace CardManager.Models.StorageSpecifications;
+
 public interface IStorageSpecification
 {
     IStorageLocation Location { get; set; }
@@ -16,5 +17,6 @@ public class StorageSpecification(IStorageMedia storageMedia, IStorageLocation s
 
     public static StorageSpecification Default => new(StorageMedia.Default, StorageLocation.Default);
 
-    public override string ToString() => string.Empty;
+    public override string ToString() =>
+        $"{this.Media.ToString()}{Environment.NewLine}{this.Location.ToString()}";
 }

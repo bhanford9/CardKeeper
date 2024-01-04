@@ -1,5 +1,5 @@
-﻿using BlazorBootstrap;
-using CardManager.Models.Cards.PokemonCards;
+﻿using System.ComponentModel;
+using BlazorBootstrap;
 using CardManager.ViewModels.ModalViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels;
 
@@ -12,7 +12,7 @@ public partial class EditCardModal : BaseView<IEditCardModalViewModel>
 
     protected override void OnInitialized()
     {
-        this.cardViewModel = this.viewModelsFactory.NewPokemonCardViewModel(new PokemonCard());
+        this.cardViewModel = this.viewModelsFactory.NewPokemonCard();
         this.ViewModel = this.viewModelsFactory.DefaultEditCardModal();
         base.OnInitialized();
     }
@@ -23,8 +23,21 @@ public partial class EditCardModal : BaseView<IEditCardModalViewModel>
         Func<Task> onCancel = default!)
     {
         this.cardViewModel = cardViewModel;
+        this.cardViewModel.PropertyChanged += this.CardViewModelPropertyChanged;
         this.ViewModel = this.viewModelsFactory.NewEditCardModal(onSubmit, onCancel);
         this.ViewModel.EditModalCompleted += this.cardModal.HideAsync;
         await this.cardModal.ShowAsync();
+    }
+
+    private void CardViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        // being lazy
+        this.StateHasChanged();
+    }
+
+    private void OnModalHidden()
+    {
+        this.cardViewModel.PropertyChanged -= this.CardViewModelPropertyChanged;
+        this.ViewModel.OnHidden();
     }
 }

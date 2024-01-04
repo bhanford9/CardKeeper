@@ -9,6 +9,7 @@ public interface IGradingAggregateViewModel
     IPsaGradingViewModel PsaGrading { get; set; }
     GradingHost SelectedGradingHost { get; set; }
 
+    ICardGrade ToModel();
     string ToString();
 }
 
@@ -21,6 +22,14 @@ public class GradingAggregateViewModel : IGradingAggregateViewModel
     public ICgcGradingViewModel CgcGrading { get; set; } = new CgcGradingViewModel();
 
     public IPsaGradingViewModel PsaGrading { get; set; } = new PsaGradingViewModel();
+
+    public ICardGrade ToModel() => this.SelectedGradingHost switch
+        {
+            GradingHost.Beckett => this.BeckettGrading.ToModel(),
+            GradingHost.Cgc => this.CgcGrading.ToModel(),
+            GradingHost.Psa => this.PsaGrading.ToModel(),
+            _ => throw new ArgumentOutOfRangeException()
+        };
 
     public override string ToString() =>
         this.SelectedGradingHost switch

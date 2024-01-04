@@ -53,11 +53,13 @@ public static class ModelsContainer
 
     private static IServiceCollection AddStorageSpecifications(this IServiceCollection builder)
         => builder
-            .AddTransient<IStorageLocation, StorageLocation>()
-            .AddTransient<IStorageMedia, StorageMedia>()
-            .AddTransient<IStorageMedia, Binder>()
+            .AddTransient<IStorageSpecFactory, StorageSpecFactory>()
+            .AddTransient<IStorageLocation, SleeveLocation>()
+            .AddTransient<IStorageLocation, BoxLocation>()
+            .AddTransient<ISleeveLocation, SleeveLocation>()
+            .AddTransient<IBoxLocation, BoxLocation>()
             .AddTransient<IStorageMedia, Box>()
-            .AddTransient<IBinder, Binder>()
+            .AddTransient<IStorageMedia, Binder>()
             .AddTransient<IBox, Box>()
-            .AddTransient<IStorageSpecification, StorageSpecification>();
+            .AddTransient<IBinder, Binder>();
 }

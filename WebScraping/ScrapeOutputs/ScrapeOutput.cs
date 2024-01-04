@@ -1,8 +1,10 @@
-﻿namespace WebScraping.ScrapeOutputs;
+﻿using WebScraping.ScrapingResults;
+
+namespace WebScraping.ScrapeOutputs;
 
 public static class ScrapeOutputUtilities
 {
-    public static T As<T>(this IScrapeOutput output) where T : IScrapeOutput => (T)(object)output;
+    public static T As<T>(this IScrapingResult result) where T : IScrapeOutput => (T)result.ScrapedValue;
 }
 
 public interface IScrapeOutput { }

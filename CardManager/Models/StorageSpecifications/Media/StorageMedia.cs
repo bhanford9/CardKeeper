@@ -1,12 +1,24 @@
 ﻿namespace CardManager.Models.StorageSpecifications.Media;
+
 public interface IStorageMedia
 {
-    string Name { get; set; }
+    string Type { get; }
+
+    string ToString();
 }
 
-public class StorageMedia : IStorageMedia
+public abstract class StorageMedia() : IStorageMedia
 {
-    public string Name { get; set; } = string.Empty;
+    public static IStorageMedia Default => new NoStorageMedia();
+    
+    public abstract string Type { get; }
 
-    public static StorageMedia Default => new();
+    public string Description { get; set; } = string.Empty;
+
+    public override string ToString() => $"{this.Type}{Environment.NewLine}{this.Description}";
+}
+
+public class NoStorageMedia() : StorageMedia()
+{
+    public override string Type { get; } = "No Storage";
 }

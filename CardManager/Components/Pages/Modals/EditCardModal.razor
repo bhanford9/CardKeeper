@@ -1,9 +1,12 @@
 ﻿@* Usings *@
+@using CardManager.Components.StorageSpecViews
 @using CardManager.Components.UtilityViews
 @using CardManager.Models.Cards.PokemonCards
 @using CardManager.Models.Grading.BeckettGrading
 @using CardManager.Models.Grading.CgcGrading
 @using CardManager.Models.Grading.PsaGrading
+@using CardManager.Models.StorageSpecifications.Location
+@using CardManager.Models.StorageSpecifications.Media
 @using CardManager.ViewModels.ModalViewModels
 @using CardManager.ViewModels.PokemonCollectionViewModels
 @using CardManager.Models.Grading
@@ -12,7 +15,7 @@
 
 @inherits BaseView<IEditCardModalViewModel>
 
-<Modal @ref="cardModal" Title="Pokemon Card Editor" OnHidden="@ViewModel.OnHidden" IsScrollable="true">
+<Modal @ref="cardModal" Title="Pokemon Card Editor" OnHidden="@OnModalHidden" IsScrollable="true">
     <BodyTemplate>
         <div class="flex-container small-row-margin">
             <label class="flex-child-1">Name:</label>
@@ -26,8 +29,36 @@
             <label class="flex-child-1">Year:</label>
             <InputNumber class="flex-child-1" TValue="int" @bind-Value="@cardViewModel.CreationYear"></InputNumber>
         </div>
-        <div class="flex-container storage-form">
-            <label class="flex-child-1">Storage Form:</label>
+        <div class="storage-input">
+            <div class="flex-container small-row-margin">
+                <label class="flex-child-1">Storage Media:</label>
+                <EnumSelectorView CssClasses="flex-child-1" TEnum="StorageMediaType" ViewModel="@cardViewModel.MediaType" />
+            </div>
+
+            <div class="flex-container-col">
+                @if (cardViewModel.MediaType.SelectedValue == StorageMediaType.Binder)
+                {
+                    <div class="flex-container small-row-margin">
+                        <label class="flex-child-1">Storage Location:</label>
+                        <EnumSelectorView CssClasses="flex-child-1" TEnum="StorageLocationType" ViewModel="@cardViewModel.LocationType" />
+                    </div>
+                    @if (cardViewModel.LocationType.SelectedValue == StorageLocationType.Sleeve)
+                    {
+                        <SleeveLocationView CssClasses="flex-child-1" ViewModel="@cardViewModel.StorageLocation" />
+                    }
+                }
+                @if (cardViewModel.MediaType.SelectedValue == StorageMediaType.Box)
+                {
+                    <div class="flex-container small-row-margin">
+                        <label class="flex-child-1">Storage Location:</label>
+                        <EnumSelectorView CssClasses="flex-child-1" TEnum="StorageLocationType" ViewModel="@cardViewModel.LocationType" />
+                    </div>
+                    @if (cardViewModel.LocationType.SelectedValue == StorageLocationType.Box)
+                    {
+                        <BoxLocationView CssClasses="flex-child-1" ViewModel="@cardViewModel.StorageLocation" />
+                    }
+                }
+            </div>
         </div>
         <div class="grade-input">
             <div class="flex-container small-row-margin">
@@ -66,7 +97,7 @@
         </div>
         <div class="flex-container small-row-margin">
             <label class="flex-child-1">Series:</label>
-            <EnumSelectorView CssClasses="flex-child-1" TEnum="PokemonSeries" ViewModel="@cardViewModel.Series"/>
+            <EnumSelectorView CssClasses="flex-child-1" TEnum="PokemonSeries" ViewModel="@cardViewModel.Series" />
         </div>
         <div class="flex-container small-row-margin">
             <label class="flex-child-1">Rarity:</label>
@@ -74,7 +105,7 @@
         </div>
         <div class="flex-container small-row-margin">
             <label class="flex-child-1">Holographic:</label>
-            <EnumSelectorView CssClasses="flex-child-1" TEnum="PokemonHolographic" ViewModel="@cardViewModel.Holographic"/>
+            <EnumSelectorView CssClasses="flex-child-1" TEnum="PokemonHolographic" ViewModel="@cardViewModel.Holographic" />
         </div>
         <div class="flex-container small-row-margin">
             <label class="flex-child-1">Type:</label>

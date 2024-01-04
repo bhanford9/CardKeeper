@@ -5,6 +5,7 @@ using CardManager.ViewModels;
 using CardManager.ViewModels.GradingViewModels;
 using CardManager.ViewModels.MonetaryViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels;
+using CardManager.ViewModels.StorageSpecViewModels;
 using CardManager.ViewModels.UtilityViewModels;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using WebScraping;
@@ -32,6 +33,9 @@ builder.Services
     .AddTransient<IPokemonCardViewModel, PokemonCardViewModel>()
     .AddTransient<IPokemonCollectionViewModel, PokemonCollectionViewModel>()
     .AddTransient(typeof(IEnumSelectorViewModel<>), typeof(EnumSelectorViewModel<>))
+    //.AddTransient<IStorageSpecViewModel, StorageSpecViewModel>()
+    //.AddTransient<IStorageLocationViewModel, StorageLocationViewModel>()
+    //.AddTransient<IStorageMediaViewModel, StorageMediaViewModel>()
     .RegisterModels()
     .RegisterWebScraping();
 

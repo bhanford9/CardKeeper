@@ -1,0 +1,22 @@
+﻿@using CardManager.Components.Pages
+@using CardManager.ViewModels.StorageSpecViewModels
+
+@inherits BaseView<IStorageLocationViewModel>
+
+<div class="flex-container-col">
+    <div class="flex-container small-row-margin flex-child-col-1">
+        <div class="flex-child-2" />
+        <label class="flex-child-1">Page:</label>
+        <InputNumber class="flex-child-1 w-75" TValue="int" @bind-Value="@sleeveViewModel.Page" />
+    </div>
+    <div class="flex-container small-row-margin flex-child-col-1">
+        <div class="flex-child-2" />
+        <label class="flex-child-1">Row:</label>
+        <InputNumber class="flex-child-1 w-75" TValue="int" @bind-Value="@sleeveViewModel.Row" />
+    </div>
+    <div class="flex-container small-row-margin flex-child-col-1">
+        <div class="flex-child-2" />
+        <label class="flex-child-1">Column:</label>
+        <InputNumber class="flex-child-1 w-75" TValue="int" @bind-Value="@sleeveViewModel.Column" />
+    </div>
+</div>
