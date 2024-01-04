@@ -1,4 +1,6 @@
-﻿namespace CardManager.Models.StorageSpecifications.Media;
+﻿using CardManager.SerializationDtos.StorageSpecifications.Media;
+
+namespace CardManager.Models.StorageSpecifications.Media;
 
 public interface IStorageMedia
 {
@@ -7,7 +9,8 @@ public interface IStorageMedia
     string ToString();
 }
 
-public abstract class StorageMedia() : IStorageMedia
+public abstract class StorageMedia<TDto> : IStorageMedia
+    where TDto : IStorageMediaDto
 {
     public static IStorageMedia Default => new NoStorageMedia();
     
@@ -15,10 +18,14 @@ public abstract class StorageMedia() : IStorageMedia
 
     public string Description { get; set; } = string.Empty;
 
+    public abstract TDto ToDto();
+
     public override string ToString() => $"{this.Type}{Environment.NewLine}{this.Description}";
 }
 
-public class NoStorageMedia() : StorageMedia()
+public class NoStorageMedia : StorageMedia<NoStorageMediaDto>
 {
     public override string Type { get; } = "No Storage";
+
+    public override NoStorageMediaDto ToDto() => new();
 }

@@ -11,6 +11,7 @@ using CardManager.Models.MonetaryData;
 using CardManager.Models.StorageSpecifications;
 using CardManager.Models.StorageSpecifications.Location;
 using CardManager.Models.StorageSpecifications.Media;
+using CardManager.SerializationDtos.Cards.PokemonCards;
 
 namespace CardManager.Models;
 
@@ -26,7 +27,7 @@ public static class ModelsContainer
 
     private static IServiceCollection AddCardsData(this IServiceCollection builder)
         => builder
-            .AddTransient<ICard, PokemonCard>()
+            .AddTransient<ICard<PokemonCardDto>, PokemonCard>()
             .AddTransient<IPokemonCard, PokemonCard>();
 
     private static IServiceCollection AddCardSourcesData(this IServiceCollection builder)

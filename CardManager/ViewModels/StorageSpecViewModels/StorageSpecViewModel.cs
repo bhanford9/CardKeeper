@@ -36,7 +36,7 @@ public class StorageSpecViewModel : IStorageSpecViewModel
     public IStorageMediaViewModel StorageMedia { get; } 
 
     public override string ToString() =>
-        $"{StorageMedia.ToString()}{Environment.NewLine}{StorageLocation.ToString()}";
+        $"{this.StorageMedia.ToString()}{Environment.NewLine}{this.StorageLocation.ToString()}";
 
-    public IStorageSpecification ToModel() => storageSpec;
+    public IStorageSpecification ToModel() => this.storageSpec;
 }

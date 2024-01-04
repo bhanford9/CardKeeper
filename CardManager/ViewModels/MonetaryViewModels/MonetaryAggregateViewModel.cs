@@ -18,6 +18,6 @@ public class MonetaryAggregateViewModel(
 
     public override string ToString()
     {
-        return MavinViewModel.ToString();
+        return this.MavinViewModel.ToString();
     }
 }

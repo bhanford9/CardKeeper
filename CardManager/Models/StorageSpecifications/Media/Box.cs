@@ -1,10 +1,12 @@
-﻿namespace CardManager.Models.StorageSpecifications.Media;
+﻿using CardManager.SerializationDtos.StorageSpecifications.Media;
 
-public interface IBox : IStorageMedia
-{
-}
+namespace CardManager.Models.StorageSpecifications.Media;
 
-public class Box : StorageMedia, IBox
+public interface IBox : IStorageMedia, ISerializableModel<BoxDto> { }
+
+public class Box : StorageMedia<BoxDto>, IBox
 {
     public override string Type { get; } = "Box";
+
+    public override BoxDto ToDto() => new() { Type = this.Type, };
 }

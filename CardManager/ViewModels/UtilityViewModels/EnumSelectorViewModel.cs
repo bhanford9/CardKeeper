@@ -24,7 +24,7 @@ public class EnumSelectorViewModel<TScale> : BaseViewModel, IEnumSelectorViewMod
 
     public TScale SelectedValue
     {
-        get => selectedValue;
+        get => this.selectedValue;
         set
         {
             this.selectedValue = value;

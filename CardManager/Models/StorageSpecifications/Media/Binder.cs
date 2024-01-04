@@ -1,8 +1,12 @@
-﻿namespace CardManager.Models.StorageSpecifications.Media;
+﻿using CardManager.SerializationDtos.StorageSpecifications.Media;
 
-public interface IBinder : IStorageMedia { }
+namespace CardManager.Models.StorageSpecifications.Media;
 
-public class Binder : StorageMedia, IBinder
+public interface IBinder : IStorageMedia, ISerializableModel<BinderDto> { }
+
+public class Binder : StorageMedia<BinderDto>, IBinder
 {
     public override string Type { get; } = "Binder";
+
+    public override BinderDto ToDto() => new() { Type = this.Type, };
 }

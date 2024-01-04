@@ -1,6 +1,8 @@
-﻿namespace CardManager.Models.Grading.BeckettGrading;
+﻿using CardManager.SerializationDtos.Grading.BeckettGrading;
 
-public interface IBeckettGrade : ICardGrade
+namespace CardManager.Models.Grading.BeckettGrading;
+
+public interface IBeckettGrade : ICardGrade, ISerializableModel<BeckettGradeDto>
 {
     BeckettScale Centering { get; set; }
     BeckettScale Corners { get; set; }
@@ -20,4 +22,13 @@ public class BeckettGrade : IBeckettGrade
     public BeckettScale Surface { get; set; }
 
     public BeckettScale Overall { get; set; }
+
+    public BeckettGradeDto ToDto() => new()
+    {
+        Centering = this.Centering,
+        Corners = this.Corners,
+        Edges = this.Edges,
+        Overall = this.Overall,
+        Surface = this.Surface,
+    };
 }

@@ -1,4 +1,6 @@
-﻿namespace CardManager.Models.StorageSpecifications.Location;
+﻿using CardManager.SerializationDtos.StorageSpecifications.Location;
+
+namespace CardManager.Models.StorageSpecifications.Location;
 
 public interface IStorageLocation
 {
@@ -9,7 +11,8 @@ public interface IStorageLocation
     string ToString();
 }
 
-public abstract class StorageLocation : IStorageLocation
+public abstract class StorageLocation<TDto> : IStorageLocation
+    where TDto : IStorageLocationDto
 {
     public static IStorageLocation Default => new NoLocation();
 
@@ -17,14 +20,18 @@ public abstract class StorageLocation : IStorageLocation
 
     public abstract StorageLocationType Type { get; }
 
+    public abstract TDto ToDto();
+
     public abstract override string ToString();
 }
 
-public class NoLocation : StorageLocation
+public class NoLocation : StorageLocation<NoLocationDto>
 {
     public override string Name => "No Location";
 
     public override StorageLocationType Type => StorageLocationType.None;
+
+    public override NoLocationDto ToDto() => new();
 
     public override string ToString() => this.Name;
 }

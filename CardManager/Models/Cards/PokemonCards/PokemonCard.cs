@@ -1,13 +1,17 @@
-﻿using CardManager.Services;
+﻿using CardManager.Models.Grading.BeckettGrading;
+using CardManager.Models.Grading.CgcGrading;
+using CardManager.Models.Grading.PsaGrading;
+using CardManager.SerializationDtos.Cards.PokemonCards;
+using CardManager.Services;
 using WebScraping.WebScrapingParameters.PokemonScrapingParameters;
 using static CardManager.Models.Cards.PokemonCards.PokemonCard;
 
 namespace CardManager.Models.Cards.PokemonCards;
 
-public interface IPokemonCard : ICard
+public interface IPokemonCard : ICard<PokemonCardDto>
 {
     event AppraisalReceivedHandler? AppraisalReceived;
- 
+
     string Number { get; set; }
     int CreationYear { get; set; }
     PokemonHolographic Holographic { get; set; }
@@ -18,7 +22,7 @@ public interface IPokemonCard : ICard
     Task RetrieveAppraisal();
 }
 
-public class PokemonCard(IWebScrapingService webScrapingService) : Card, IPokemonCard
+public class PokemonCard(IWebScrapingService webScrapingService) : Card<PokemonCardDto>, IPokemonCard
 {
     private readonly IWebScrapingService webScrapingService = webScrapingService;
 
@@ -51,4 +55,25 @@ public class PokemonCard(IWebScrapingService webScrapingService) : Card, IPokemo
         this.Monetary.Mavin.AveragePrice = result.AverageWorth;
         this.AppraisalReceived?.Invoke();
     }
+
+    public override PokemonCardDto ToDto() => new()
+    {
+        Id = this.Id,
+        Name = this.Name,
+        Number = this.Number,
+        CreationYear = this.CreationYear,
+        Holographic = this.Holographic,
+        Rarity = this.Rarity,
+        Series = this.Series,
+        Type = this.Type,
+        Grade = this.Grade switch
+        {
+            IBeckettGrade b => b.ToDto(),
+            ICgcGrade c => c.ToDto(),
+            IPsaGrade p => p.ToDto(),
+            _ => throw new ArgumentOutOfRangeException(),
+        },
+        Monetary = this.Monetary.ToDto(),
+        StorageSpec = this.StorageSpec.ToDto(),
+    };
 }

@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2F969E2A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebScrapingTests", "WebScrapingTests\WebScrapingTests.csproj", "{F41EBD65-ED9F-4B9F-9738-E9E3F005C83B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerializationServices", "SerializationServices\SerializationServices.csproj", "{8E6DAC02-F406-447E-8527-555E2847AF93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{F41EBD65-ED9F-4B9F-9738-E9E3F005C83B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F41EBD65-ED9F-4B9F-9738-E9E3F005C83B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F41EBD65-ED9F-4B9F-9738-E9E3F005C83B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E6DAC02-F406-447E-8527-555E2847AF93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E6DAC02-F406-447E-8527-555E2847AF93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E6DAC02-F406-447E-8527-555E2847AF93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E6DAC02-F406-447E-8527-555E2847AF93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

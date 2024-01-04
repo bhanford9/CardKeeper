@@ -5,9 +5,9 @@ using CardManager.ViewModels;
 using CardManager.ViewModels.GradingViewModels;
 using CardManager.ViewModels.MonetaryViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels;
-using CardManager.ViewModels.StorageSpecViewModels;
 using CardManager.ViewModels.UtilityViewModels;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using SerializationServices;
 using WebScraping;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,7 +37,8 @@ builder.Services
     //.AddTransient<IStorageLocationViewModel, StorageLocationViewModel>()
     //.AddTransient<IStorageMediaViewModel, StorageMediaViewModel>()
     .RegisterModels()
-    .RegisterWebScraping();
+    .RegisterWebScraping()
+    .RegisterSerializationServices();
 
 var app = builder.Build();
 

@@ -1,6 +1,8 @@
-﻿namespace CardManager.Models.Grading.CgcGrading;
+﻿using CardManager.SerializationDtos.Grading.CgcGrading;
 
-public interface ICgcGrade : ICardGrade
+namespace CardManager.Models.Grading.CgcGrading;
+
+public interface ICgcGrade : ICardGrade, ISerializableModel<CgcGradeDto>
 {
     CgcScale Centering { get; set; }
     CgcScale Corners { get; set; }
@@ -20,4 +22,13 @@ public class CgcGrade : ICgcGrade
     public CgcScale Surface { get; set; }
 
     public CgcScale Overall { get; set; }
+
+    public CgcGradeDto ToDto() => new()
+    {
+        Centering = this.Centering,
+        Corners = this.Corners,
+        Edges = this.Edges,
+        Overall = this.Overall,
+        Surface = this.Surface,
+    };
 }

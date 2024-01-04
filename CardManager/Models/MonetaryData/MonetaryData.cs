@@ -1,6 +1,8 @@
-﻿namespace CardManager.Models.MonetaryData;
+﻿using CardManager.SerializationDtos.MonetaryData;
 
-public interface IMonetaryData
+namespace CardManager.Models.MonetaryData;
+
+public interface IMonetaryData : ISerializableModel<MonetaryDataDto>
 {
     IMavinMonetaryData Mavin { get; set; }
 
@@ -14,5 +16,9 @@ public class MonetaryData(IMavinMonetaryData mavinMonetaryData) : IMonetaryData
     public static MonetaryData Default => new(new MavinMonetaryData());
 
     public override string ToString()
-        => Mavin.ToString() ?? string.Empty;
+        => this.Mavin.ToString() ?? string.Empty;
+    public MonetaryDataDto ToDto() => new()
+    {
+        Mavin = this.Mavin.ToDto(),
+    };
 }

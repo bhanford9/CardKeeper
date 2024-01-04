@@ -14,7 +14,7 @@ public class PsaGradingViewModel : BaseViewModel, IPsaGradingViewModel
 {
     public GradingInputRowViewModel<PsaScale> Overall { get; set; } = new("Overall");
 
-    public IPsaGrade ToModel() => new PsaGrade() { Score = Overall.SelectorViewModel.SelectedValue };
+    public IPsaGrade ToModel() => new PsaGrade() { Score = this.Overall.SelectorViewModel.SelectedValue };
 
     public override string ToString() => this.Overall?.ToString() ?? "Not Graded";
 }

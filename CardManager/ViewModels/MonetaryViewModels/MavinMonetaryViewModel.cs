@@ -15,11 +15,11 @@ public class MavinMonetaryViewModel(IMavinMonetaryData model) : IMavinMonetaryVi
 {
     private readonly IMavinMonetaryData model = model;
 
-    public double AveragePrice => model.AveragePrice;
+    public double AveragePrice => this.model.AveragePrice;
 
-    public double MinPrice => model.MinPrice;
+    public double MinPrice => this.model.MinPrice;
 
-    public double MaxPrice => model.MaxPrice;
+    public double MaxPrice => this.model.MaxPrice;
 
     public override string ToString() => $"Min: {this.MinPrice}, Avg: {this.AveragePrice}, Max: {this.MaxPrice}";
 }

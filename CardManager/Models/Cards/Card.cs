@@ -1,10 +1,11 @@
 ﻿using CardManager.Models.Grading;
 using CardManager.Models.MonetaryData;
 using CardManager.Models.StorageSpecifications;
+using CardManager.SerializationDtos;
 
 namespace CardManager.Models.Cards;
 
-public interface ICard
+public interface ICard<T> : ISerializableModel<T> where T : IModelSerialization
 {
     ICardGrade Grade { get; set; }
     Guid Id { get; set; }
@@ -13,7 +14,7 @@ public interface ICard
     IStorageSpecification StorageSpec { get; set; }
 }
 
-public class Card : ICard
+public abstract class Card<T> : ICard<T> where T : IModelSerialization
 {
     public Guid Id { get; set; } = default;
 
@@ -24,4 +25,6 @@ public class Card : ICard
     public ICardGrade Grade { get; set; } = Ungraded.Get;
 
     public IMonetaryData Monetary { get; set; } = MonetaryData.MonetaryData.Default;
+
+    public abstract T ToDto();
 }

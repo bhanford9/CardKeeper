@@ -45,7 +45,7 @@ public class PokemonCollectionViewModel(IViewModelsFactory viewModelsFactory)
 
     public void AddCard()
     {
-        this.Cards.Add(viewModelsFactory.NewPokemonCard());
+        this.Cards.Add(this.viewModelsFactory.NewPokemonCard());
         this.Cards.Last().RowDataChanged += this.PokemonCollectionViewModelRowDataChanged;
         this.GridDataChanged?.Invoke();
     }

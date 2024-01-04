@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SerializationServices\SerializationServices.csproj" />
     <ProjectReference Include="..\WebScraping\WebScraping.csproj" />
   </ItemGroup>
 

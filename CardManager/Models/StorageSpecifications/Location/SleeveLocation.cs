@@ -1,13 +1,15 @@
-﻿namespace CardManager.Models.StorageSpecifications.Location;
+﻿using CardManager.SerializationDtos.StorageSpecifications.Location;
 
-public interface ISleeveLocation : IStorageLocation
+namespace CardManager.Models.StorageSpecifications.Location;
+
+public interface ISleeveLocation : IStorageLocation, ISerializableModel<SleeveLocationDto>
 {
     int Column { get; set; }
     int Page { get; set; }
     int Row { get; set; }
 }
 
-public class SleeveLocation : StorageLocation, ISleeveLocation
+public class SleeveLocation : StorageLocation<SleeveLocationDto>, ISleeveLocation
 {
     public override string Name => "Sleeve Location";
 
@@ -18,6 +20,15 @@ public class SleeveLocation : StorageLocation, ISleeveLocation
     public int Column { get; set; }
 
     public override StorageLocationType Type => StorageLocationType.Sleeve;
+
+    public override SleeveLocationDto ToDto() => new()
+    {
+        Name = this.Name,
+        Page = this.Page,
+        Row = this.Row,
+        Column = this.Column,
+        Type = this.Type,
+    };
 
     public override string ToString() =>
         $"{this.Name}{Environment.NewLine}" +
