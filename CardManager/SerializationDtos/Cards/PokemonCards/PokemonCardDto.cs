@@ -1,9 +1,8 @@
 ﻿using CardManager.Models.Cards.PokemonCards;
-using CardManager.Models.MonetaryData;
-using CardManager.Models.StorageSpecifications;
 using CardManager.SerializationDtos.Grading;
 using CardManager.SerializationDtos.MonetaryData;
 using CardManager.SerializationDtos.StorageSpecifications;
+using CardManager.Services;
 
 namespace CardManager.SerializationDtos.Cards.PokemonCards;
 
@@ -20,4 +19,22 @@ public class PokemonCardDto : IModelSerialization
     public ICardGradeDto Grade { get; set; } = default!;
     public MonetaryDataDto Monetary { get; set; } = default!;
     public StorageSpecificationDto StorageSpec { get; set; } = default!;
+}
+
+public static class PokemonCardDtoUtils
+{
+    public static IPokemonCard ToModel(this PokemonCardDto dto, IWebScrapingService s) => new PokemonCard(s)
+    {
+        Id = dto.Id,
+        Name = dto.Name,
+        Number = dto.Number,
+        CreationYear = dto.CreationYear,
+        Holographic = dto.Holographic,
+        Rarity = dto.Rarity,
+        Series = dto.Series,
+        Type = dto.Type,
+        Grade = dto.Grade.ToModel(),
+        Monetary = dto.Monetary.ToModel(),
+        StorageSpec = dto.StorageSpec.ToModel(),
+    };
 }

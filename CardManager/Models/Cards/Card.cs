@@ -5,7 +5,7 @@ using CardManager.SerializationDtos;
 
 namespace CardManager.Models.Cards;
 
-public interface ICard<T> : ISerializableModel<T> where T : IModelSerialization
+public interface ICard
 {
     ICardGrade Grade { get; set; }
     Guid Id { get; set; }
@@ -14,7 +14,9 @@ public interface ICard<T> : ISerializableModel<T> where T : IModelSerialization
     IStorageSpecification StorageSpec { get; set; }
 }
 
-public abstract class Card<T> : ICard<T> where T : IModelSerialization
+public abstract class Card<T> :
+    ICard,
+    ISerializableModel<T> where T : IModelSerialization
 {
     public Guid Id { get; set; } = default;
 

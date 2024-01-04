@@ -5,6 +5,7 @@ using CardManager.ViewModels;
 using CardManager.ViewModels.GradingViewModels;
 using CardManager.ViewModels.MonetaryViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels;
+using CardManager.ViewModels.StorageSpecViewModels;
 using CardManager.ViewModels.UtilityViewModels;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SerializationServices;
@@ -26,13 +27,15 @@ builder.Services
     .AddTransient<IMonetaryAggregateViewModel, MonetaryAggregateViewModel>()
     .AddTransient<IBeckettGradingViewModel, BeckettGradingViewModel>()
     .AddTransient<ICgcGradingViewModel, CgcGradingViewModel>()
+    .AddTransient<IPsaGradingViewModel, PsaGradingViewModel>()
     .AddTransient<IGradingAggregateViewModel, GradingAggregateViewModel>()
     .AddTransient(typeof(IGradingInputRowViewModel<>), typeof(GradingInputRowViewModel<>))
-    .AddTransient<IPsaGradingViewModel, PsaGradingViewModel>()
     //.AddTransient<IEditCardModalViewModel, EditCardModalViewModel>()
     .AddTransient<IPokemonCardViewModel, PokemonCardViewModel>()
     .AddTransient<IPokemonCollectionViewModel, PokemonCollectionViewModel>()
     .AddTransient(typeof(IEnumSelectorViewModel<>), typeof(EnumSelectorViewModel<>))
+    .AddTransient<ISleeveLocationViewModel, SleeveLocationViewModel>()
+    .AddTransient<IBoxLocationViewModel, BoxLocationViewModel>()
     //.AddTransient<IStorageSpecViewModel, StorageSpecViewModel>()
     //.AddTransient<IStorageLocationViewModel, StorageLocationViewModel>()
     //.AddTransient<IStorageMediaViewModel, StorageMediaViewModel>()

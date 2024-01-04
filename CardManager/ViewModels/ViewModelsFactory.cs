@@ -1,7 +1,12 @@
 ﻿using CardManager.Models.Cards.PokemonCards;
+using CardManager.Models.Grading.BeckettGrading;
+using CardManager.Models.Grading.CgcGrading;
+using CardManager.Models.Grading.PsaGrading;
 using CardManager.Models.MonetaryData;
 using CardManager.Models.StorageSpecifications;
-using CardManager.Services;
+using CardManager.Models.StorageSpecifications.Location;
+using CardManager.Models.StorageSpecifications.Media;
+using CardManager.ViewModels.GradingViewModels;
 using CardManager.ViewModels.ModalViewModels;
 using CardManager.ViewModels.MonetaryViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels;
@@ -10,12 +15,14 @@ using CardManager.ViewModels.StorageSpecViewModels;
 namespace CardManager.ViewModels;
 
 public class ViewModelsFactory(
-    IWebScrapingService webScrapingService,
-    IStorageSpecFactory storageSpecFactory)
+    //IWebScrapingService webScrapingService,
+    IStorageSpecFactory storageSpecFactory,
+    IServiceProvider serviceProvider)
     : IViewModelsFactory
 {
-    private readonly IWebScrapingService webScrapingService = webScrapingService;
+    //private readonly IWebScrapingService webScrapingService = webScrapingService;
     private readonly IStorageSpecFactory storageSpecFactory = storageSpecFactory;
+    private readonly IServiceProvider serviceProvider = serviceProvider;
 
     public IEditCardModalViewModel NewEditCardModal(Func<Task> onSubmit, Func<Task> onCancel)
         => new EditCardModalViewModel(onSubmit, onCancel);
@@ -24,26 +31,61 @@ public class ViewModelsFactory(
         => new EditCardModalViewModel(() => { return Task.CompletedTask; }, () => { return Task.CompletedTask; });
 
     public IPokemonCardViewModel NewPokemonCard()
-        => new PokemonCardViewModel(this, new PokemonCard(this.webScrapingService));
+        => new PokemonCardViewModel(
+            this,
+            this.storageSpecFactory,
+            this.GetService<IPokemonCard>()!,
+            this.GetService<IGradingAggregateViewModel>()!);
+
+    public IPokemonCardViewModel NewPokemonCard(IPokemonCard card)
+        => new PokemonCardViewModel(
+            this,
+            this.storageSpecFactory,
+            card,
+            this.GetService<IGradingAggregateViewModel>()!);
 
     public IMavinMonetaryViewModel NewMavinMonetary(IMavinMonetaryData model)
         => new MavinMonetaryViewModel(model);
 
-    public ISleeveLocationViewModel NewSleeveLocation()
-        => new SleeveLocationViewModel(this.storageSpecFactory.NewSleeveLocation());
+    public ISleeveLocationViewModel NewSleeveLocation(ISleeveLocation? sleeve = null)
+        => sleeve == null
+         ? this.GetService<ISleeveLocationViewModel>()
+         : new SleeveLocationViewModel(sleeve);
 
-    public IBoxLocationViewModel NewBoxLocation()
-        => new BoxLocationViewModel(this.storageSpecFactory.NewBoxLocation());
+    public IBoxLocationViewModel NewBoxLocation(IBoxLocation? box = null)
+        => box == null
+         ? this.GetService<IBoxLocationViewModel>()
+         : new BoxLocationViewModel(box);
 
-    public NoLocationViewModel NewNoLocation()
-        => new NoLocationViewModel(this.storageSpecFactory.NewNoLocation());
+    public NoLocationViewModel NewNoLocation(NoLocation? none = null)
+        => none == null 
+         ? new NoLocationViewModel(this.storageSpecFactory.NewNoLocation())
+         : new NoLocationViewModel(none);
 
-    public IStorageMediaViewModel NewBoxStorage()
-        => new StorageMediaViewModel(this.storageSpecFactory.NewBox());
-    
-    public IStorageMediaViewModel NewBinderStorage()
-        => new StorageMediaViewModel(this.storageSpecFactory.NewBinder());
+    public IStorageMediaViewModel NewBoxStorage(IBox? box = null)
+        => box == null
+         ? new StorageMediaViewModel(this.storageSpecFactory.NewBox())
+         : new StorageMediaViewModel(box);
 
-    public IStorageMediaViewModel NewNoStorage()
-        => new StorageMediaViewModel(this.storageSpecFactory.NewNoStorage());
+    public IStorageMediaViewModel NewBinderStorage(IBinder? binder = null)
+        => binder == null
+         ? new StorageMediaViewModel(this.storageSpecFactory.NewBinder())
+         : new StorageMediaViewModel(binder);
+
+    public IStorageMediaViewModel NewNoStorage(NoStorageMedia? none = null)
+        => none == null
+         ? new StorageMediaViewModel(this.storageSpecFactory.NewNoStorage())
+         : new StorageMediaViewModel(none);
+
+    public IBeckettGradingViewModel NewBeckettGrading(IBeckettGrade model)
+        => new BeckettGradingViewModel(model);
+    public ICgcGradingViewModel NewCgcGrading(ICgcGrade model)
+        => new CgcGradingViewModel(model);
+    public IPsaGradingViewModel NewPsaGrading(IPsaGrade model)
+        => new PsaGradingViewModel(model);
+
+    public IMonetaryAggregateViewModel NewMonetaryAggregate(IMavinMonetaryData mavin)
+        => new MonetaryAggregateViewModel(this, mavin);
+
+    private T GetService<T>() => this.serviceProvider.GetService<T>()!;
 }

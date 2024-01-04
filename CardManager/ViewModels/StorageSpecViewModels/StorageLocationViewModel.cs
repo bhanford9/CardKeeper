@@ -42,11 +42,11 @@ public class SleeveLocationViewModel(ISleeveLocation storageLocation)
 {
     private ISleeveLocation sleeveLocation => (ISleeveLocation)this.storageLocation;
 
-    public int Page { get; set; }
+    public int Page { get; set; } = storageLocation.Page;
 
-    public int Row { get; set; }
+    public int Row { get; set; } = storageLocation.Row;
 
-    public int Column { get; set; }
+    public int Column { get; set; } = storageLocation.Column;
 
     protected override void UpdateModel()
     {
@@ -68,7 +68,7 @@ public class BoxLocationViewModel(IBoxLocation storageLocation)
 {
     private IBoxLocation boxLocation => (IBoxLocation)this.storageLocation;
 
-    public string Description { get; set; } = string.Empty;
+    public string Description { get; set; } = storageLocation.Description;
 
     protected override void UpdateModel()
     {

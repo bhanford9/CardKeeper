@@ -13,15 +13,19 @@ public interface IGradingAggregateViewModel
     string ToString();
 }
 
-public class GradingAggregateViewModel : IGradingAggregateViewModel
+public class GradingAggregateViewModel(
+    IBeckettGradingViewModel beckettGrading,
+    ICgcGradingViewModel cgcGrading,
+    IPsaGradingViewModel psaGrading)
+    : IGradingAggregateViewModel
 {
     public GradingHost SelectedGradingHost { get; set; }
 
-    public IBeckettGradingViewModel BeckettGrading { get; set; } = new BeckettGradingViewModel();
+    public IBeckettGradingViewModel BeckettGrading { get; set; } = beckettGrading;
 
-    public ICgcGradingViewModel CgcGrading { get; set; } = new CgcGradingViewModel();
+    public ICgcGradingViewModel CgcGrading { get; set; } = cgcGrading;
 
-    public IPsaGradingViewModel PsaGrading { get; set; } = new PsaGradingViewModel();
+    public IPsaGradingViewModel PsaGrading { get; set; } = psaGrading;
 
     public ICardGrade ToModel() => this.SelectedGradingHost switch
         {

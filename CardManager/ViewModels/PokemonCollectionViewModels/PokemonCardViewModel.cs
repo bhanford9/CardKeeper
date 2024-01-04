@@ -1,4 +1,7 @@
 ﻿using CardManager.Models.Cards.PokemonCards;
+using CardManager.Models.Grading.BeckettGrading;
+using CardManager.Models.Grading.CgcGrading;
+using CardManager.Models.Grading.PsaGrading;
 using CardManager.Models.StorageSpecifications;
 using CardManager.Models.StorageSpecifications.Location;
 using CardManager.Models.StorageSpecifications.Media;
@@ -33,30 +36,71 @@ public interface IPokemonCardViewModel : IViewModel, IDisposable
     IMonetaryAggregateViewModel MonetaryData { get; set; }
 
     void RetrieveAppraisal();
+    IPokemonCard ToModel();
 }
 
 public class PokemonCardViewModel : BaseViewModel, IPokemonCardViewModel
 {
     private readonly IViewModelsFactory viewModelsFactory;
+    private readonly IStorageSpecFactory storageSpecFactory;
     private readonly IPokemonCard pokemonCardModel;
     public delegate void RowDataChangedHandler();
 
     public event RowDataChangedHandler? RowDataChanged;
 
-    public PokemonCardViewModel(IViewModelsFactory viewModelsFactory, IPokemonCard cardModel)
+    public PokemonCardViewModel(
+        IViewModelsFactory viewModelsFactory,
+        IStorageSpecFactory storageSpecFactory,
+        IPokemonCard cardModel,
+        IGradingAggregateViewModel gradingAggregate)
     {
         this.viewModelsFactory = viewModelsFactory;
+        this.storageSpecFactory = storageSpecFactory;
         this.pokemonCardModel = cardModel;
+        this.Grading = gradingAggregate;
+
+        this.Id = cardModel.Id;
+        this.Name = cardModel.Name;
+        this.Number = cardModel.Number;
+        this.CreationYear = cardModel.CreationYear;
+        this.Rarity.SelectedValue = cardModel.Rarity;
+        this.Series.SelectedValue = cardModel.Series;
+        this.Holographic.SelectedValue = cardModel.Holographic;
+        this.LocationType.SelectedValue = cardModel.StorageSpec.Location.Type;
+        this.MediaType.SelectedValue = cardModel.StorageSpec.Media.Type;
+        this.Type.SelectedValue = cardModel.Type;
+
+        switch (cardModel.Grade)
+        {
+            case BeckettGrade b:
+                this.Grading.SelectedGradingHost = Models.Grading.GradingHost.Beckett;
+                this.Grading.BeckettGrading = this.viewModelsFactory.NewBeckettGrading(b);
+                break;
+            case CgcGrade cgc:
+                this.Grading.SelectedGradingHost = Models.Grading.GradingHost.Cgc;
+                this.Grading.CgcGrading = this.viewModelsFactory.NewCgcGrading(cgc);
+                break;
+            case PsaGrade psa:
+                this.Grading.SelectedGradingHost = Models.Grading.GradingHost.Psa;
+                this.Grading.PsaGrading = this.viewModelsFactory.NewPsaGrading(psa);
+                break;
+        }
 
         this.StorageLocation = cardModel.StorageSpec.Location.Type switch
         {
-            StorageLocationType.Box => new BoxLocationViewModel((IBoxLocation)cardModel.StorageSpec.Location),
-            StorageLocationType.Sleeve => new SleeveLocationViewModel((ISleeveLocation)cardModel.StorageSpec.Location),
-            _ => new NoLocationViewModel((NoLocation)cardModel.StorageSpec.Location),
+            StorageLocationType.Box => this.viewModelsFactory.NewBoxLocation((IBoxLocation)cardModel.StorageSpec.Location),
+            StorageLocationType.Sleeve => this.viewModelsFactory.NewSleeveLocation((ISleeveLocation)cardModel.StorageSpec.Location),
+            _ => this.viewModelsFactory.NewNoLocation((NoLocation)cardModel.StorageSpec.Location),
         };
 
-        this.StorageMedia = new StorageMediaViewModel(cardModel.StorageSpec.Media);
-        this.MonetaryData = new MonetaryAggregateViewModel(viewModelsFactory, cardModel.Monetary.Mavin);
+        this.StorageMedia = cardModel.StorageSpec.Media.Type switch
+        {
+            StorageMediaType.Box => this.viewModelsFactory.NewBoxStorage((IBox)cardModel.StorageSpec.Media),
+            StorageMediaType.Binder => this.viewModelsFactory.NewBinderStorage((IBinder)cardModel.StorageSpec.Media),
+            _ => this.viewModelsFactory.NewNoStorage((NoStorageMedia)cardModel.StorageSpec.Media),
+        };
+        
+        this.MonetaryData = this.viewModelsFactory.NewMonetaryAggregate(cardModel.Monetary.Mavin);
         this.pokemonCardModel.AppraisalReceived += this.PokemonCardModelAppraisalReceived;
         this.MediaType.ValueSelected += this.MediaTypeValueSelected;
         this.LocationType.ValueSelected += this.LocationTypeValueSelected;
@@ -76,7 +120,7 @@ public class PokemonCardViewModel : BaseViewModel, IPokemonCardViewModel
 
     public IStorageMediaViewModel StorageMedia { get; private set; }
 
-    public IGradingAggregateViewModel Grading { get; set; } = new GradingAggregateViewModel();
+    public IGradingAggregateViewModel Grading { get; set; }
 
     public IMonetaryAggregateViewModel MonetaryData { get; set; }
 
@@ -100,24 +144,19 @@ public class PokemonCardViewModel : BaseViewModel, IPokemonCardViewModel
 
     public void RetrieveAppraisal()
     {
-        this.pokemonCardModel.Id = this.Id;
-        this.pokemonCardModel.Name = this.Name;
-        this.pokemonCardModel.Number = this.Number;
-        this.pokemonCardModel.StorageSpec = new StorageSpecification(
-            this.StorageMedia.ToModel(),
-            this.StorageLocation.ToModel());
-        this.pokemonCardModel.Rarity = this.Rarity.SelectedValue;
-        this.pokemonCardModel.Series = this.Series.SelectedValue;
-        this.pokemonCardModel.Grade = this.Grading.ToModel();
-        this.pokemonCardModel.CreationYear = this.CreationYear;
-        this.pokemonCardModel.Holographic = this.Holographic.SelectedValue;
-        this.pokemonCardModel.Type = this.Type.SelectedValue;
+        this.StoreToModel();
         this.pokemonCardModel.RetrieveAppraisal().ConfigureAwait(false);
     }
 
     public void Dispose()
     {
         this.pokemonCardModel.AppraisalReceived -= this.PokemonCardModelAppraisalReceived;
+    }
+
+    public IPokemonCard ToModel()
+    {
+        this.StoreToModel();
+        return this.pokemonCardModel;
     }
 
     private void PokemonCardModelAppraisalReceived()
@@ -150,5 +189,21 @@ public class PokemonCardViewModel : BaseViewModel, IPokemonCardViewModel
         };
 
         this.NotifyPropertyChanged(nameof(this.StorageMedia));
+    }
+
+    private void StoreToModel()
+    {
+        this.pokemonCardModel.Id = this.Id;
+        this.pokemonCardModel.Name = this.Name;
+        this.pokemonCardModel.Number = this.Number;
+        this.pokemonCardModel.CreationYear = this.CreationYear;
+        this.pokemonCardModel.StorageSpec = this.storageSpecFactory.NewStorageSpec(
+            this.StorageMedia.ToModel(),
+            this.StorageLocation.ToModel());
+        this.pokemonCardModel.Rarity = this.Rarity.SelectedValue;
+        this.pokemonCardModel.Series = this.Series.SelectedValue;
+        this.pokemonCardModel.Grade = this.Grading.ToModel();
+        this.pokemonCardModel.Holographic = this.Holographic.SelectedValue;
+        this.pokemonCardModel.Type = this.Type.SelectedValue;
     }
 }

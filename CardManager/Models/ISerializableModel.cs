@@ -2,7 +2,7 @@
 
 namespace CardManager.Models;
 
-public interface ISerializableModel<T> where T : IModelSerialization
+public interface ISerializableModel<TDto> where TDto : IModelSerialization
 {
-    T ToDto();
+    TDto ToDto();
 }

@@ -1,4 +1,5 @@
-﻿using CardManager.Models.Cards;
+﻿using CardManager.Models.CardCollections;
+using CardManager.Models.Cards;
 using CardManager.Models.Cards.PokemonCards;
 using CardManager.Models.CardSources;
 using CardManager.Models.CardSources.CardSourceScrapingModels;
@@ -19,48 +20,50 @@ public static class ModelsContainer
 {
     public static IServiceCollection RegisterModels(this IServiceCollection builder)
         => builder
-            .AddCardsData()
-            .AddCardSourcesData()
-            .AddGradingData()
-            .AddMonetaryData()
-            .AddStorageSpecifications();
+        .AddCardsData()
+        .AddCardSourcesData()
+        .AddGradingData()
+        .AddMonetaryData()
+        .AddStorageSpecifications();
 
     private static IServiceCollection AddCardsData(this IServiceCollection builder)
         => builder
-            .AddTransient<ICard<PokemonCardDto>, PokemonCard>()
-            .AddTransient<IPokemonCard, PokemonCard>();
+        .AddTransient<ICard, PokemonCard>()
+        .AddTransient<IPokemonCard, PokemonCard>()
+        .AddTransient<ICardCollection<IPokemonCard, PokemonCardDto>, PokemonCardCollection>()
+        .AddTransient<IPokemonCardCollection, PokemonCardCollection>();
 
     private static IServiceCollection AddCardSourcesData(this IServiceCollection builder)
         => builder
-            .AddTransient<ICardSourceScrapingModel, CardSourceScrapingModel>()
-            .AddTransient<ICardSourceUrlModel, CardSourceUrlModel>()
-            .AddTransient<ICardSourceModel, EmptyCardSourceModel>()
-            .AddTransient<IEmptyCardSourceModel, EmptyCardSourceModel>();
+        .AddTransient<ICardSourceScrapingModel, CardSourceScrapingModel>()
+        .AddTransient<ICardSourceUrlModel, CardSourceUrlModel>()
+        .AddTransient<ICardSourceModel, EmptyCardSourceModel>()
+        .AddTransient<IEmptyCardSourceModel, EmptyCardSourceModel>();
 
     private static IServiceCollection AddGradingData(this IServiceCollection builder)
         => builder
-            .AddTransient<ICardGrade, Ungraded>()
-            .AddTransient<ICardGrade, PsaGrade>()
-            .AddTransient<ICardGrade, CgcGrade>()
-            .AddTransient<ICardGrade, BeckettGrade>()
-            .AddTransient<IPsaGrade, PsaGrade>()
-            .AddTransient<ICgcGrade, CgcGrade>()
-            .AddTransient<IBeckettGrade, BeckettGrade>();
+        .AddTransient<ICardGrade, Ungraded>()
+        .AddTransient<ICardGrade, PsaGrade>()
+        .AddTransient<ICardGrade, CgcGrade>()
+        .AddTransient<ICardGrade, BeckettGrade>()
+        .AddTransient<IPsaGrade, PsaGrade>()
+        .AddTransient<ICgcGrade, CgcGrade>()
+        .AddTransient<IBeckettGrade, BeckettGrade>();
 
     private static IServiceCollection AddMonetaryData(this IServiceCollection builder)
         => builder
-            .AddTransient<IMonetaryData, MonetaryData.MonetaryData>()
-            .AddTransient<IMavinMonetaryData, MavinMonetaryData>();
+        .AddTransient<IMonetaryData, MonetaryData.MonetaryData>()
+        .AddTransient<IMavinMonetaryData, MavinMonetaryData>();
 
     private static IServiceCollection AddStorageSpecifications(this IServiceCollection builder)
         => builder
-            .AddTransient<IStorageSpecFactory, StorageSpecFactory>()
-            .AddTransient<IStorageLocation, SleeveLocation>()
-            .AddTransient<IStorageLocation, BoxLocation>()
-            .AddTransient<ISleeveLocation, SleeveLocation>()
-            .AddTransient<IBoxLocation, BoxLocation>()
-            .AddTransient<IStorageMedia, Box>()
-            .AddTransient<IStorageMedia, Binder>()
-            .AddTransient<IBox, Box>()
-            .AddTransient<IBinder, Binder>();
+        .AddTransient<IStorageSpecFactory, StorageSpecFactory>()
+        .AddTransient<IStorageLocation, SleeveLocation>()
+        .AddTransient<IStorageLocation, BoxLocation>()
+        .AddTransient<ISleeveLocation, SleeveLocation>()
+        .AddTransient<IBoxLocation, BoxLocation>()
+        .AddTransient<IStorageMedia, Box>()
+        .AddTransient<IStorageMedia, Binder>()
+        .AddTransient<IBox, Box>()
+        .AddTransient<IBinder, Binder>();
 }

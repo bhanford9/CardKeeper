@@ -17,6 +17,15 @@ public interface IBeckettGradingViewModel : IViewModel
 
 public class BeckettGradingViewModel : BaseViewModel, IBeckettGradingViewModel
 {
+    public BeckettGradingViewModel(IBeckettGrade model)
+    {
+        this.Centering.SelectorViewModel.SelectedValue = model.Centering;
+        this.Corners.SelectorViewModel.SelectedValue = model.Corners;
+        this.Edges.SelectorViewModel.SelectedValue = model.Edges;
+        this.Surface.SelectorViewModel.SelectedValue = model.Surface;
+        this.Overall.SelectorViewModel.SelectedValue = model.Overall;
+    }
+
     public GradingInputRowViewModel<BeckettScale> Centering { get; } = new("Centering");
 
     public GradingInputRowViewModel<BeckettScale> Corners { get; } = new("Corners");

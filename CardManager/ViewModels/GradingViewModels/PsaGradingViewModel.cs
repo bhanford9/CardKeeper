@@ -12,6 +12,11 @@ public interface IPsaGradingViewModel : IViewModel
 
 public class PsaGradingViewModel : BaseViewModel, IPsaGradingViewModel
 {
+    public PsaGradingViewModel(IPsaGrade model)
+    {
+        this.Overall.SelectorViewModel.SelectedValue = model.Score;
+    }
+
     public GradingInputRowViewModel<PsaScale> Overall { get; set; } = new("Overall");
 
     public IPsaGrade ToModel() => new PsaGrade() { Score = this.Overall.SelectorViewModel.SelectedValue };

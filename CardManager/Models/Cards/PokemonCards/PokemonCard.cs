@@ -8,7 +8,9 @@ using static CardManager.Models.Cards.PokemonCards.PokemonCard;
 
 namespace CardManager.Models.Cards.PokemonCards;
 
-public interface IPokemonCard : ICard<PokemonCardDto>
+public interface IPokemonCard :
+    ICard,
+    ISerializableModel<PokemonCardDto>
 {
     event AppraisalReceivedHandler? AppraisalReceived;
 

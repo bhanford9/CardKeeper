@@ -4,7 +4,7 @@ namespace CardManager.ViewModels.StorageSpecViewModels;
 
 public interface IStorageMediaViewModel
 {
-    string Type { get; set; }
+    StorageMediaType Type { get; set; }
 
     IStorageMedia ToModel();
 
@@ -13,7 +13,7 @@ public interface IStorageMediaViewModel
 
 public class StorageMediaViewModel(IStorageMedia media) : IStorageMediaViewModel
 {
-    public string Type { get; set; } = media.Type;
+    public StorageMediaType Type { get; set; } = media.Type;
 
     public override string ToString() => media.ToString();
 

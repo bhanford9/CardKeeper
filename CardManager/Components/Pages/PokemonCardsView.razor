@@ -58,7 +58,9 @@
             @context.Type
         </GridColumn>
         <GridColumn TItem="IPokemonCardViewModel" HeaderText="$$" PropertyName="MonetaryData" SortKeySelector="card => card.MonetaryData.MavinViewModel.AveragePrice">
-            @context.MonetaryData
+            <div>Min: $@context.MonetaryData.MavinViewModel.MinPrice</div>
+            <div>Avg: $@context.MonetaryData.MavinViewModel.AveragePrice</div>
+            <div>Max: $@context.MonetaryData.MavinViewModel.MaxPrice</div>
         </GridColumn>
 @*         <GridColumn TItem="IPokemonCardViewModel" HeaderText="Edit" PropertyName="Edit">
             <Button Color="ButtonColor.Primary"

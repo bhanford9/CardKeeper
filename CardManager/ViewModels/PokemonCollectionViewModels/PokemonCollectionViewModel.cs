@@ -1,13 +1,21 @@
 ﻿using BlazorBootstrap;
+using CardManager.Models.CardCollections;
+using static CardManager.ViewModels.PokemonCollectionViewModels.CardCollectionEvents;
 
 namespace CardManager.ViewModels.PokemonCollectionViewModels;
+
+public class CardCollectionEvents
+{
+    public delegate Task EditCardPressedHandler(IPokemonCardViewModel card);
+    public delegate Task GridDataChangedHandler();
+}
 
 public interface IPokemonCollectionViewModel : IViewModel, IDisposable
 {
     List<IPokemonCardViewModel> Cards { get; set; }
 
-    event PokemonCollectionViewModel.EditCardPressedHandler? EditCardPressed;
-    event PokemonCollectionViewModel.GridDataChangedHandler? GridDataChanged;
+    event EditCardPressedHandler? EditCardPressed;
+    event GridDataChangedHandler? GridDataChanged;
 
     void AddCard();
     void CardEditClicked(IPokemonCardViewModel card);
@@ -19,20 +27,22 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     Task OnSelectedCardsChanged(HashSet<IPokemonCardViewModel> args);
 }
 
-public class PokemonCollectionViewModel(IViewModelsFactory viewModelsFactory)
+public class PokemonCollectionViewModel(
+    IViewModelsFactory viewModelsFactory,
+    IPokemonCardCollection pokemonCardCollection)
     : BaseViewModel, IPokemonCollectionViewModel
 {
     private readonly IViewModelsFactory viewModelsFactory = viewModelsFactory;
-
-    public delegate Task EditCardPressedHandler(IPokemonCardViewModel card);
-    public delegate Task GridDataChangedHandler();
+    private IPokemonCardCollection pokemonCards = pokemonCardCollection;
 
     public event EditCardPressedHandler? EditCardPressed;
     public event GridDataChangedHandler? GridDataChanged;
 
     public Grid<IPokemonCardViewModel> GridReference { get; set; } = default!;
 
-    public List<IPokemonCardViewModel> Cards { get; set; } = new List<IPokemonCardViewModel>();
+    public List<IPokemonCardViewModel> Cards { get; set; } = pokemonCardCollection.Cards
+        .Select(viewModelsFactory.NewPokemonCard)
+        .ToList();
 
     public void Dispose()
     {
@@ -52,7 +62,8 @@ public class PokemonCollectionViewModel(IViewModelsFactory viewModelsFactory)
 
     public void SaveTable()
     {
-
+        this.pokemonCards.Cards = this.Cards.Select(x => x.ToModel()).ToList();
+        this.pokemonCards.Save();
     }
 
     public void RetrieveAppraisals()

@@ -23,7 +23,7 @@ public class StorageSpecification(IStorageMedia storageMedia, IStorageLocation s
     public override string ToString() =>
         $"{this.Media.ToString()}{Environment.NewLine}{this.Location.ToString()}";
 
-    public StorageSpecificationDto ToDto() => new StorageSpecificationDto()
+    public StorageSpecificationDto ToDto() => new()
     {
         StorageMedia = this.Media switch
         {

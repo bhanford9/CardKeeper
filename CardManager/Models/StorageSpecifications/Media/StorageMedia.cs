@@ -4,7 +4,7 @@ namespace CardManager.Models.StorageSpecifications.Media;
 
 public interface IStorageMedia
 {
-    string Type { get; }
+    StorageMediaType Type { get; }
 
     string ToString();
 }
@@ -14,7 +14,7 @@ public abstract class StorageMedia<TDto> : IStorageMedia
 {
     public static IStorageMedia Default => new NoStorageMedia();
     
-    public abstract string Type { get; }
+    public abstract StorageMediaType Type { get; }
 
     public string Description { get; set; } = string.Empty;
 
@@ -25,7 +25,7 @@ public abstract class StorageMedia<TDto> : IStorageMedia
 
 public class NoStorageMedia : StorageMedia<NoStorageMediaDto>
 {
-    public override string Type { get; } = "No Storage";
+    public override StorageMediaType Type { get; } = StorageMediaType.None;
 
     public override NoStorageMediaDto ToDto() => new();
 }

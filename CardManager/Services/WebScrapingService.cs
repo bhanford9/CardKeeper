@@ -1,5 +1,4 @@
-﻿using CardManager.Models.Cards.PokemonCards;
-using WebScraping;
+﻿using WebScraping;
 using WebScraping.ScrapeOutputs.PokemonScrapeOutputs;
 using WebScraping.WebScrapingParameters.PokemonScrapingParameters;
 using static CardManager.Services.WebScrapingService;

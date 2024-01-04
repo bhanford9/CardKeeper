@@ -2,6 +2,7 @@
 
 public enum StorageMediaType
 {
+    None,
     Binder,
     Box,
 }

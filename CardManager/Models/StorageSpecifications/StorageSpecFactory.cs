@@ -11,19 +11,29 @@ public interface IStorageSpecFactory
     IBoxLocation NewBoxLocation();
     NoLocation NewNoLocation();
     ISleeveLocation NewSleeveLocation();
+    IStorageSpecification NewBinderSpec();
+    IStorageSpecification NewBoxSpec();
+    IStorageSpecification NewStorageSpec(IStorageMedia media, IStorageLocation location);
 }
 
-public class StorageSpecFactory : IStorageSpecFactory
+public class StorageSpecFactory(IServiceProvider serviceProvider) : IStorageSpecFactory
 {
-    public IBoxLocation NewBoxLocation() => new BoxLocation();
+    private readonly IServiceProvider serviceProvider = serviceProvider;
 
-    public ISleeveLocation NewSleeveLocation() => new SleeveLocation();
+    public IBoxLocation NewBoxLocation() => this.GetService<IBoxLocation>();
+    public ISleeveLocation NewSleeveLocation() => this.GetService<ISleeveLocation>();
+    public NoLocation NewNoLocation() => new();
 
-    public NoLocation NewNoLocation() => new NoLocation();
+    public IBinder NewBinder() => this.GetService<IBinder>();
+    public IBox NewBox() => this.GetService<IBox>();
+    public NoStorageMedia NewNoStorage() => new();
 
-    public IBinder NewBinder() => new Binder();
+    public IStorageSpecification NewBinderSpec()
+        => new StorageSpecification(this.NewBinder(), this.NewSleeveLocation());
+    public IStorageSpecification NewBoxSpec()
+        => new StorageSpecification(this.NewBox(), this.NewBoxLocation());
+    public IStorageSpecification NewStorageSpec(IStorageMedia media, IStorageLocation location)
+        => new StorageSpecification(media, location);
 
-    public IBox NewBox() => new Box();
-
-    public NoStorageMedia NewNoStorage() => new NoStorageMedia();
+    private T GetService<T>() => this.serviceProvider.GetService<T>()!;
 }
