@@ -60,3 +60,12 @@
 .flex-child-6 {
   flex: 6;
 }
+
+.float-left-small-margin {
+  float: left;
+  margin: 0px 2px;
+}
+
+.text-align-right {
+  text-align: right;
+}

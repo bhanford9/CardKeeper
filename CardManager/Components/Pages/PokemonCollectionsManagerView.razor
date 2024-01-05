@@ -1,0 +1,19 @@
+﻿@using CardManager.ViewModels.PokemonCollectionViewModels
+@* View Config *@
+@page "/pokemon"
+@rendermode InteractiveServer
+
+@inherits BaseInjectView<IPokemonCollectionsManagerViewModel>
+
+<Tabs>
+  <Tab Title="Full Collection">
+    <Content>
+      <PokemonCardsView ViewModel="@ViewModel.FullCollection"/>
+    </Content>
+  </Tab>
+  <Tab Title="Custom Collections">
+    <Content>
+      <h2>Custom Collections</h2>
+    </Content>
+  </Tab>
+</Tabs>

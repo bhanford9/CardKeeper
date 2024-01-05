@@ -1,4 +1,5 @@
-﻿using CardManager.Models.Cards.PokemonCards;
+﻿using CardManager.Models.CardCollections;
+using CardManager.Models.Cards.PokemonCards;
 using CardManager.Models.Grading.BeckettGrading;
 using CardManager.Models.Grading.CgcGrading;
 using CardManager.Models.Grading.PsaGrading;
@@ -27,6 +28,7 @@ public interface IViewModelsFactory
     IStorageMediaViewModel NewNoStorage(NoStorageMedia? none = null);
     IPokemonCardViewModel NewPokemonCard();
     IPokemonCardViewModel NewPokemonCard(IPokemonCard card);
+    IPokemonCollectionViewModel NewPokemonCollection(IPokemonCardCollection collection);
     IPsaGradingViewModel NewPsaGrading(IPsaGrade model);
     ISleeveLocationViewModel NewSleeveLocation(ISleeveLocation? sleeve = null);
 }

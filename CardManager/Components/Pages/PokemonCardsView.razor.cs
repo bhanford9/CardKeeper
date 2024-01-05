@@ -4,7 +4,7 @@ using CardManager.ViewModels.PokemonCollectionViewModels;
 
 namespace CardManager.Components.Pages;
 
-public partial class PokemonCardsView : BaseInjectView<IPokemonCollectionViewModel>, IDisposable
+public partial class PokemonCardsView : BaseView<IPokemonCollectionViewModel>, IDisposable
 {
     private ConfirmDialog dialog = new();
     private EditCardModal editCardModal = new();

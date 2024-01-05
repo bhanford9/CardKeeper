@@ -1,4 +1,5 @@
-﻿using CardManager.Models.Cards.PokemonCards;
+﻿using CardManager.Models.CardCollections;
+using CardManager.Models.Cards.PokemonCards;
 using CardManager.Models.Grading.BeckettGrading;
 using CardManager.Models.Grading.CgcGrading;
 using CardManager.Models.Grading.PsaGrading;
@@ -23,6 +24,9 @@ public class ViewModelsFactory(
     //private readonly IWebScrapingService webScrapingService = webScrapingService;
     private readonly IStorageSpecFactory storageSpecFactory = storageSpecFactory;
     private readonly IServiceProvider serviceProvider = serviceProvider;
+
+    public IPokemonCollectionViewModel NewPokemonCollection(IPokemonCardCollection collection)
+        => new PokemonCollectionViewModel(this, collection);
 
     public IEditCardModalViewModel NewEditCardModal(Func<Task> onSubmit, Func<Task> onCancel)
         => new EditCardModalViewModel(onSubmit, onCancel);

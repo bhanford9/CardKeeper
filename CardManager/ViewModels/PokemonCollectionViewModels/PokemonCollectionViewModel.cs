@@ -20,6 +20,7 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     double TotalMin { get; set; }
     double TotalAverage { get; set; }
     double TotalMax { get; set; }
+    bool CollectionsVisible { get; set; }
 
     event EditCardPressedHandler? EditCardPressed;
     event GridDataChangedHandler? GridDataChanged;
@@ -34,6 +35,8 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
         GridDataProviderRequest<IPokemonCardViewModel> request);
     Task CardRowDoubleClicked(GridRowEventArgs<IPokemonCardViewModel> args);
     Task OnSelectedCardsChanged(HashSet<IPokemonCardViewModel> args);
+    void AddToCollection();
+    void ShowCollections(bool doShow);
 }
 
 public class PokemonCollectionViewModel
@@ -75,6 +78,8 @@ public class PokemonCollectionViewModel
 
     public double TotalMax { get; set; }
 
+    public bool CollectionsVisible { get; set; }
+
     public void Dispose()
     {
         this.Cards.ForEach(card => card.RowDataChanged -= this.PokemonCollectionViewModelRowDataChanged);
@@ -105,6 +110,19 @@ public class PokemonCollectionViewModel
         }
 
         this.PokemonCollectionViewModelRowDataChanged();
+    }
+
+    public void ShowCollections(bool doShow)
+    {
+        this.CollectionsVisible = doShow;
+    }
+
+    public void AddToCollection()
+    {
+        foreach (var card in this.Cards.Where(x => x.IsSelected))
+        {
+            // TODO
+        }
     }
 
     public void DuplicateSelectedCard()

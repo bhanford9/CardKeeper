@@ -18,7 +18,7 @@ public abstract class Card<T> :
     ICard,
     ISerializableModel<T> where T : IModelSerialization
 {
-    public Guid Id { get; set; } = default;
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     public string Name { get; set; } = string.Empty;
 

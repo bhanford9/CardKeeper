@@ -22,7 +22,6 @@ builder.Services.AddBlazorBootstrap();
 builder.Services
     .AddSingleton<IViewModelsFactory, ViewModelsFactory>()
     .AddSingleton<IWebScrapingService, WebScrapingService>()
-    .AddTransient<IPokemonCollectionViewModel, PokemonCollectionViewModel>()
     .AddTransient<IMavinMonetaryViewModel, MavinMonetaryViewModel>()
     .AddTransient<IMonetaryAggregateViewModel, MonetaryAggregateViewModel>()
     .AddTransient<IBeckettGradingViewModel, BeckettGradingViewModel>()
@@ -36,6 +35,7 @@ builder.Services
     .AddTransient(typeof(IEnumSelectorViewModel<>), typeof(EnumSelectorViewModel<>))
     .AddTransient<ISleeveLocationViewModel, SleeveLocationViewModel>()
     .AddTransient<IBoxLocationViewModel, BoxLocationViewModel>()
+    .AddTransient<IPokemonCollectionsManagerViewModel, PokemonCollectionsManagerViewModel>()
     //.AddTransient<IStorageSpecViewModel, StorageSpecViewModel>()
     //.AddTransient<IStorageLocationViewModel, StorageLocationViewModel>()
     //.AddTransient<IStorageMediaViewModel, StorageMediaViewModel>()
