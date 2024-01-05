@@ -1,0 +1,14 @@
+﻿.stat-header {
+  text-align: center;
+  font-size: larger;
+  border-bottom: 2px solid black;
+}
+
+.card-averages-container, .card-totals-container {
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+.stat-row-title {
+  font-weight: bold;
+}

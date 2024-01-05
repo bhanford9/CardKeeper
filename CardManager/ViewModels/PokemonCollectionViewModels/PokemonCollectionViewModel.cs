@@ -13,6 +13,12 @@ public class CardCollectionEvents
 public interface IPokemonCollectionViewModel : IViewModel, IDisposable
 {
     List<IPokemonCardViewModel> Cards { get; set; }
+    double AverageMin { get; set; }
+    double AverageAverage { get; set; }
+    double AverageMax { get; set; }
+    double TotalMin { get; set; }
+    double TotalAverage { get; set; }
+    double TotalMax { get; set; }
 
     event EditCardPressedHandler? EditCardPressed;
     event GridDataChangedHandler? GridDataChanged;
@@ -27,22 +33,43 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     Task OnSelectedCardsChanged(HashSet<IPokemonCardViewModel> args);
 }
 
-public class PokemonCollectionViewModel(
-    IViewModelsFactory viewModelsFactory,
-    IPokemonCardCollection pokemonCardCollection)
+public class PokemonCollectionViewModel
     : BaseViewModel, IPokemonCollectionViewModel
 {
-    private readonly IViewModelsFactory viewModelsFactory = viewModelsFactory;
-    private IPokemonCardCollection pokemonCards = pokemonCardCollection;
+    private readonly IViewModelsFactory viewModelsFactory;
+    private readonly IPokemonCardCollection pokemonCards;
 
     public event EditCardPressedHandler? EditCardPressed;
     public event GridDataChangedHandler? GridDataChanged;
 
+    public PokemonCollectionViewModel(
+        IViewModelsFactory viewModelsFactory,
+        IPokemonCardCollection pokemonCardCollection)
+    {
+        this.viewModelsFactory = viewModelsFactory;
+        this.pokemonCards = pokemonCardCollection;
+        this.Cards = pokemonCardCollection.Cards
+            .Select(viewModelsFactory.NewPokemonCard)
+            .ToList();
+
+        this.UpdateStats();
+    }
+
     public Grid<IPokemonCardViewModel> GridReference { get; set; } = default!;
 
-    public List<IPokemonCardViewModel> Cards { get; set; } = pokemonCardCollection.Cards
-        .Select(viewModelsFactory.NewPokemonCard)
-        .ToList();
+    public List<IPokemonCardViewModel> Cards { get; set; }
+
+    public double AverageMin { get; set; }
+
+    public double AverageAverage { get; set; }
+
+    public double AverageMax { get; set; }
+
+    public double TotalMin { get; set; }
+
+    public double TotalAverage { get; set; }
+
+    public double TotalMax { get; set; }
 
     public void Dispose()
     {
@@ -72,6 +99,8 @@ public class PokemonCollectionViewModel(
         {
             card.RetrieveAppraisal();
         }
+
+        this.UpdateStats();
     }
 
     public void CardEditClicked(IPokemonCardViewModel card) => this.EditCardPressed?.Invoke(card);
@@ -93,6 +122,16 @@ public class PokemonCollectionViewModel(
 
         return Task.CompletedTask;
     }
-    
+
     private void PokemonCollectionViewModelRowDataChanged() => this.GridDataChanged?.Invoke();
+
+    private void UpdateStats()
+    {
+        this.AverageMin = Math.Round(this.Cards.Average(c => c.MonetaryData.MavinViewModel.MinPrice), 2);
+        this.AverageAverage = Math.Round(this.Cards.Average(c => c.MonetaryData.MavinViewModel.AveragePrice), 2);
+        this.AverageMax = Math.Round(this.Cards.Average(c => c.MonetaryData.MavinViewModel.MaxPrice), 2);
+        this.TotalMin = Math.Round(this.Cards.Sum(c => c.MonetaryData.MavinViewModel.MinPrice), 2);
+        this.TotalAverage = Math.Round(this.Cards.Sum(c => c.MonetaryData.MavinViewModel.AveragePrice), 2);
+        this.TotalMax = Math.Round(this.Cards.Sum(c => c.MonetaryData.MavinViewModel.MaxPrice), 2);
+    }
 }

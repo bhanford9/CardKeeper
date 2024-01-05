@@ -20,7 +20,7 @@
 }
 
 .small-row-margin {
-  margin: 0px 0px 0px 0px;
+  margin: 4px 0px 4px 0px;
 }
 
 .flex-container {
@@ -38,7 +38,6 @@
 }
 
 .flex-child-1 {
-  margin: 8px;
   flex: 1;
 }
 
@@ -52,4 +51,12 @@
 
 .flex-child-4 {
   flex: 4;
+}
+
+.flex-child-5 {
+  flex: 5;
+}
+
+.flex-child-6 {
+  flex: 6;
 }

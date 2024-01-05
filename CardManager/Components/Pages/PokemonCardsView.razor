@@ -20,6 +20,7 @@
           DataProvider="@ViewModel.CardsDataProvider"
           OnRowDoubleClick="@ViewModel.CardRowDoubleClicked"
           SelectedItemsChanged="@ViewModel.OnSelectedCardsChanged"
+          FixedHeader="true"
           AllowSorting="true"
           AllowRowClick="true"
           AllowSelection="true"
@@ -31,7 +32,7 @@
           SelectionMode="GridSelectionMode.Multiple">
         <GridColumn TItem="IPokemonCardViewModel" HeaderText="Name" PropertyName="Name" SortKeySelector="card => card.Name">
             @context.Name
-        </GridColumn> 
+        </GridColumn>
         <GridColumn TItem="IPokemonCardViewModel" HeaderText="#" PropertyName="Number">
             @context.Number
         </GridColumn>
@@ -62,12 +63,12 @@
             <div>Avg: $@context.MonetaryData.MavinViewModel.AveragePrice</div>
             <div>Max: $@context.MonetaryData.MavinViewModel.MaxPrice</div>
         </GridColumn>
-@*         <GridColumn TItem="IPokemonCardViewModel" HeaderText="Edit" PropertyName="Edit">
-            <Button Color="ButtonColor.Primary"
-                    Size="Size.ExtraSmall"
-                    @onclick="@((args) => ViewModel.CardEditClicked(context))">
-                Edit
-            </Button>
+        @*         <GridColumn TItem="IPokemonCardViewModel" HeaderText="Edit" PropertyName="Edit">
+        <Button Color="ButtonColor.Primary"
+        Size="Size.ExtraSmall"
+        @onclick="@((args) => ViewModel.CardEditClicked(context))">
+        Edit
+        </Button>
         </GridColumn> *@
     </Grid>
 
@@ -77,6 +78,47 @@
         <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="ViewModel.AddCard">Add Card</Button>
         <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="ViewModel.SaveTable">Save</Button>
         <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="ViewModel.RetrieveAppraisals">Retrieve Appraisals</Button>
+    </div>
+
+    <div class="card-stats-container flex-container">
+        <div class="stat-row-title flex-child-1 flex-container-col">
+          <div class="title-spacer flex-child-2"/>
+            <div class="mavin-title flex-child-1">Mavin</div>
+        </div>
+        <div class="card-averages-container flex-container-col flex-child-5">
+            <div class="stat-header flex-child-1">Averages</div>
+            <div class="stats flex-container flex-child-3">
+                <div class="stat-item flex-container flex-child-1">
+                    <label class="flex-child-1">Min:</label>
+                    <div class="flex-child-3">$@ViewModel.AverageMin</div>
+                </div>
+                <div class="stat-item flex-container flex-child-1">
+                    <label class="flex-child-1">Avg:</label>
+                    <div class="flex-child-3">$@ViewModel.AverageAverage</div>
+                </div>
+                <div class="stat-item flex-container flex-child-1">
+                    <label class="flex-child-1">Max:</label>
+                    <div class="flex-child-3">$@ViewModel.AverageMax</div>
+                </div>
+            </div>
+        </div>
+        <div class="card-totals-container flex-container-col flex-child-5">
+            <div class="stat-header flex-child-1">Totals</div>
+            <div class="stats flex-container flex-child-3">
+                <div class="stat-item flex-container flex-child-1">
+                    <label class="flex-child-1">Min:</label>
+                    <div class="flex-child-3">$@ViewModel.TotalMin</div>
+                </div>
+                <div class="stat-item flex-container flex-child-1">
+                    <label class="flex-child-1">Avg:</label>
+                    <div class="flex-child-3">$@ViewModel.TotalAverage</div>
+                </div>
+                <div class="stat-item flex-container flex-child-1">
+                    <label class="flex-child-1">Max:</label>
+                    <div class="flex-child-3">$@ViewModel.TotalMax</div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
