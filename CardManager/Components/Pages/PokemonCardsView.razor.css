@@ -4,11 +4,16 @@
   border-bottom: 2px solid black;
 }
 
-.card-averages-container, .card-totals-container {
+.stat-row-title-container, .card-averages-container, .card-totals-container {
   margin-left: 6px;
   margin-right: 6px;
 }
 
 .stat-row-title {
+  text-align: center;
   font-weight: bold;
+}
+
+.card-table-buttons {
+  margin-top: 10px;
 }

@@ -8,6 +8,7 @@ public class CardCollectionEvents
 {
     public delegate Task EditCardPressedHandler(IPokemonCardViewModel card);
     public delegate Task GridDataChangedHandler();
+    public delegate Task DeleteCardHandler(IPokemonCardViewModel card);
 }
 
 public interface IPokemonCollectionViewModel : IViewModel, IDisposable
@@ -22,11 +23,13 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
 
     event EditCardPressedHandler? EditCardPressed;
     event GridDataChangedHandler? GridDataChanged;
+    event DeleteCardHandler? DeleteCard;
 
     void AddCard();
-    void CardEditClicked(IPokemonCardViewModel card);
     void SaveTable();
     void RetrieveAppraisals();
+    void DuplicateSelectedCard();
+    Task DeleteSelectedCard();
     Task<GridDataProviderResult<IPokemonCardViewModel>> CardsDataProvider(
         GridDataProviderRequest<IPokemonCardViewModel> request);
     Task CardRowDoubleClicked(GridRowEventArgs<IPokemonCardViewModel> args);
@@ -41,6 +44,7 @@ public class PokemonCollectionViewModel
 
     public event EditCardPressedHandler? EditCardPressed;
     public event GridDataChangedHandler? GridDataChanged;
+    public event DeleteCardHandler? DeleteCard;
 
     public PokemonCollectionViewModel(
         IViewModelsFactory viewModelsFactory,
@@ -100,10 +104,26 @@ public class PokemonCollectionViewModel
             card.RetrieveAppraisal();
         }
 
-        this.UpdateStats();
+        this.PokemonCollectionViewModelRowDataChanged();
     }
 
-    public void CardEditClicked(IPokemonCardViewModel card) => this.EditCardPressed?.Invoke(card);
+    public void DuplicateSelectedCard()
+    {
+        var cardToDuplicate = this.Cards.First(c => c.IsSelected);
+        var duplicatedCard = this.viewModelsFactory.NewPokemonCard(cardToDuplicate.ToModel().DeepCopy());
+        this.Cards.Add(duplicatedCard);
+
+        this.PokemonCollectionViewModelRowDataChanged();
+    }
+
+    public async Task DeleteSelectedCard()
+    {
+        if (this.DeleteCard != null)
+        {
+            await this.DeleteCard.Invoke(this.Cards.First(c => c.IsSelected));
+            this.PokemonCollectionViewModelRowDataChanged();
+        }
+    }
 
     public async Task CardRowDoubleClicked(GridRowEventArgs<IPokemonCardViewModel> args)
     {
@@ -123,7 +143,11 @@ public class PokemonCollectionViewModel
         return Task.CompletedTask;
     }
 
-    private void PokemonCollectionViewModelRowDataChanged() => this.GridDataChanged?.Invoke();
+    private void PokemonCollectionViewModelRowDataChanged()
+    {
+        this.GridDataChanged?.Invoke();
+        this.UpdateStats();
+    }
 
     private void UpdateStats()
     {

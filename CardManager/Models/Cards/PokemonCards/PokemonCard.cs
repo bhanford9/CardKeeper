@@ -22,6 +22,7 @@ public interface IPokemonCard :
     ElementType Type { get; set; }
 
     Task RetrieveAppraisal();
+    IPokemonCard DeepCopy();
 }
 
 public class PokemonCard(IWebScrapingService webScrapingService) : Card<PokemonCardDto>, IPokemonCard
@@ -77,5 +78,20 @@ public class PokemonCard(IWebScrapingService webScrapingService) : Card<PokemonC
         },
         Monetary = this.Monetary.ToDto(),
         StorageSpec = this.StorageSpec.ToDto(),
+    };
+
+    public IPokemonCard DeepCopy() => new PokemonCard(this.webScrapingService)
+    {
+        Id = this.Id,
+        Name = this.Name,
+        Number = this.Number,
+        CreationYear = this.CreationYear,
+        Holographic = this.Holographic,
+        Rarity = this.Rarity,
+        Series = this.Series,
+        Type = this.Type,
+        Grade = this.Grade,
+        Monetary = this.Monetary,
+        StorageSpec = this.StorageSpec,
     };
 }

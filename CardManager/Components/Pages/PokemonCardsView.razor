@@ -63,27 +63,40 @@
             <div>Avg: $@context.MonetaryData.MavinViewModel.AveragePrice</div>
             <div>Max: $@context.MonetaryData.MavinViewModel.MaxPrice</div>
         </GridColumn>
-        @*         <GridColumn TItem="IPokemonCardViewModel" HeaderText="Edit" PropertyName="Edit">
-        <Button Color="ButtonColor.Primary"
-        Size="Size.ExtraSmall"
-        @onclick="@((args) => ViewModel.CardEditClicked(context))">
-        Edit
-        </Button>
-        </GridColumn> *@
     </Grid>
-
+    
+    <ConfirmDialog @ref="dialog" />
     <EditCardModal @ref="editCardModal"></EditCardModal>
 
     <div class="card-table-buttons">
         <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="ViewModel.AddCard">Add Card</Button>
         <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="ViewModel.SaveTable">Save</Button>
-        <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="ViewModel.RetrieveAppraisals">Retrieve Appraisals</Button>
+        <Dropdown Size="Size.Small">
+            <DropdownToggleButton Color="ButtonColor.Primary">Actions</DropdownToggleButton>
+            <DropdownMenu>
+                <DropdownItem Type="ButtonType.Button"
+                              Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) != 1)"
+                              @onclick="ViewModel.DuplicateSelectedCard">
+                    Duplicate
+                </DropdownItem>
+                <DropdownItem Type="ButtonType.Button"
+                              Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) != 1)"
+                              @onclick="ViewModel.DeleteSelectedCard">
+                    Delete
+                </DropdownItem>
+                <DropdownItem Type="ButtonType.Button"
+                              Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) <= 0)"
+                              @onclick="ViewModel.RetrieveAppraisals">
+                    Retrieve Appraisals
+                </DropdownItem>
+            </DropdownMenu>
+        </Dropdown>
     </div>
 
     <div class="card-stats-container flex-container">
-        <div class="stat-row-title flex-child-1 flex-container-col">
-          <div class="title-spacer flex-child-2"/>
-            <div class="mavin-title flex-child-1">Mavin</div>
+        <div class="stat-row-title-container flex-child-2 flex-container-col">
+            <div class="stat-header flex-child-1">Source</div>
+            <div class="stat-row-title flex-child-1">Mavin</div>
         </div>
         <div class="card-averages-container flex-container-col flex-child-5">
             <div class="stat-header flex-child-1">Averages</div>
