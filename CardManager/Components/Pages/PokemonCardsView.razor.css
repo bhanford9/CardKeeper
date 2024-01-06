@@ -14,9 +14,28 @@
   font-weight: bold;
 }
 
-/*.card-table-buttons {
+.card-table-buttons {
   margin-top: 10px;
-  overflow: hidden;
+  display: grid;
+  grid-template-columns: 80px 80px 140px 200px;
+  column-gap: 10px;
+}
+
+.card-table-button {
+  margin: 8px 8px !important;
+  justify-self: center;
+}
+
+.card-add-button {
+  grid-column: 0;
+}
+
+.card-save-button {
+  grid-column: 1;
+}
+
+.card-actions-button {
+  grid-column: 2;
 }
 
 .collections-sub-dropdown {
@@ -34,4 +53,4 @@
 
 .small-list-item:hover {
   background-color: var(--bs-dropdown-link-hover-bg);
-}*/
+}

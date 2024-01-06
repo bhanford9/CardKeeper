@@ -26,7 +26,6 @@ public abstract class CardCollection<TCard, TCardDto>
     public CardCollection(ISerializationExecutive serializationExecutive)
     {
         this.serializer = serializationExecutive;
-        this.Load();
     }
 
     public List<TCard> Cards { get; set; } = [];

@@ -64,11 +64,14 @@
     <EditCardModal @ref="editCardModal"></EditCardModal>
 
     <div class="card-table-buttons">
-        <Button class="float-left-small-margin" Color="ButtonColor.Primary" Size="Size.Small" @onclick="ViewModel.AddCard">
+        <Button Class="card-table-button card-add-button"
+                Color="ButtonColor.Primary"
+                Size="Size.Small"
+                @onclick="() => ViewModel.AddCard()">
             Add Card
         </Button>
-        <Button class="float-left-small-margin" Color="ButtonColor.Primary" Size="Size.Small" @onclick="ViewModel.SaveTable">Save</Button>
-        <Dropdown class="float-left-small-margin" Size="Size.Small">
+        <Button Class="card-table-button card-save-button" Color="ButtonColor.Primary" Size="Size.Small" @onclick="ViewModel.SaveTable">Save</Button>
+        <Dropdown Class="card-table-button card-actions-button" Size="Size.Small">
             <DropdownToggleButton Color="ButtonColor.Primary">Selected Actions</DropdownToggleButton>
             <DropdownMenu>
                 <DropdownItem Type="ButtonType.Button"
@@ -90,27 +93,30 @@
                               Style="width: 200px!important; height: 32px;"
                               Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) <= 0)"
                               @onmouseover="(() => ViewModel.ShowCollections(true))"
-                              @onmouseleave="(() => ViewModel.ShowCollections(false))"
-                              @onclick="ViewModel.AddToCollection">
+                              @onmouseleave="(() => ViewModel.ShowCollections(false))">
                     <div class="flex-container">
                         <label class="flex-child-6">Add to Collection</label>
                         <label class="flex-child-1 align-right">></label>
                     </div>
 
-                    @if (ViewModel.CollectionsVisible)
+                    @if (ViewModel.CollectionsVisible && ViewModel.CustomCollections.Count > 0)
                     {
                         <div class="card collections-sub-dropdown">
                             <ul class="list-group list-group-flush">
-                                <li class="list-group-item small-list-item">An item</li>
-                                <li class="list-group-item small-list-item">A second item</li>
-                                <li class="list-group-item small-list-item">A third item</li>
+                                @foreach (var c in ViewModel.CustomCollections)
+                                {
+                                    <li class="list-group-item small-list-item"
+                                        @onclick="() => ViewModel.AddToCollection(c.Value)">
+                                        @c.Key
+                                    </li>
+                                }
                             </ul>
                         </div>
                     }
                 </DropdownItem>
             </DropdownMenu>
         </Dropdown>
-        <div class="card-list-summary-container float-left-small-margin">
+        <div class="card-list-summary-container">
             <label>Total Cards: @ViewModel.Cards.Count</label>
         </div>
     </div>

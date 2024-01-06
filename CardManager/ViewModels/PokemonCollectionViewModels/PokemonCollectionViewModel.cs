@@ -1,5 +1,6 @@
 ﻿using BlazorBootstrap;
 using CardManager.Models.CardCollections;
+using CardManager.Models.Cards.PokemonCards;
 using static CardManager.ViewModels.PokemonCollectionViewModels.CardCollectionEvents;
 
 namespace CardManager.ViewModels.PokemonCollectionViewModels;
@@ -21,12 +22,13 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     double TotalAverage { get; set; }
     double TotalMax { get; set; }
     bool CollectionsVisible { get; set; }
+    Dictionary<string, IPokemonCollectionViewModel> CustomCollections { get; set; }
 
     event EditCardPressedHandler? EditCardPressed;
     event GridDataChangedHandler? GridDataChanged;
     event DeleteCardHandler? DeleteCard;
 
-    void AddCard();
+    void AddCard(IPokemonCardViewModel? card = null);
     void SaveTable();
     void RetrieveAppraisals();
     void DuplicateSelectedCard();
@@ -35,8 +37,9 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
         GridDataProviderRequest<IPokemonCardViewModel> request);
     Task CardRowDoubleClicked(GridRowEventArgs<IPokemonCardViewModel> args);
     Task OnSelectedCardsChanged(HashSet<IPokemonCardViewModel> args);
-    void AddToCollection();
+    void AddToCollection(IPokemonCollectionViewModel collection);
     void ShowCollections(bool doShow);
+    void LoadFromFile();
 }
 
 public class PokemonCollectionViewModel
@@ -55,16 +58,13 @@ public class PokemonCollectionViewModel
     {
         this.viewModelsFactory = viewModelsFactory;
         this.pokemonCards = pokemonCardCollection;
-        this.Cards = pokemonCardCollection.Cards
-            .Select(viewModelsFactory.NewPokemonCard)
-            .ToList();
-
-        this.UpdateStats();
     }
 
     public Grid<IPokemonCardViewModel> GridReference { get; set; } = default!;
 
-    public List<IPokemonCardViewModel> Cards { get; set; }
+    public List<IPokemonCardViewModel> Cards { get; set; } = new();
+
+    public Dictionary<string, IPokemonCollectionViewModel> CustomCollections { get; set; } = new();
 
     public double AverageMin { get; set; }
 
@@ -89,9 +89,9 @@ public class PokemonCollectionViewModel
         GridDataProviderRequest<IPokemonCardViewModel> request)
         => await Task.FromResult(request.ApplyTo(this.Cards));
 
-    public void AddCard()
+    public void AddCard(IPokemonCardViewModel? card = null)
     {
-        this.Cards.Add(this.viewModelsFactory.NewPokemonCard());
+        this.Cards.Add(card == null ? this.viewModelsFactory.NewPokemonCard() : card);
         this.Cards.Last().RowDataChanged += this.PokemonCollectionViewModelRowDataChanged;
         this.GridDataChanged?.Invoke();
     }
@@ -117,11 +117,11 @@ public class PokemonCollectionViewModel
         this.CollectionsVisible = doShow;
     }
 
-    public void AddToCollection()
+    public void AddToCollection(IPokemonCollectionViewModel collection)
     {
         foreach (var card in this.Cards.Where(x => x.IsSelected))
         {
-            // TODO
+            collection.AddCard(card);
         }
     }
 
@@ -159,6 +159,15 @@ public class PokemonCollectionViewModel
         }
 
         return Task.CompletedTask;
+    }
+
+    public void LoadFromFile()
+    {
+        this.pokemonCards.Load();
+        this.Cards = this.pokemonCards.Cards
+            .Select(viewModelsFactory.NewPokemonCard)
+            .ToList();
+        this.PokemonCollectionViewModelRowDataChanged();
     }
 
     private void PokemonCollectionViewModelRowDataChanged()

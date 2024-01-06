@@ -6,14 +6,57 @@
 @inherits BaseInjectView<IPokemonCollectionsManagerViewModel>
 
 <Tabs>
-  <Tab Title="Full Collection">
-    <Content>
-      <PokemonCardsView ViewModel="@ViewModel.FullCollection"/>
-    </Content>
-  </Tab>
-  <Tab Title="Custom Collections">
-    <Content>
-      <h2>Custom Collections</h2>
-    </Content>
-  </Tab>
+    <Tab Title="Full Collection">
+        <Content>
+            <PokemonCardsView ViewModel="@ViewModel.FullCollection" />
+        </Content>
+    </Tab>
+    <Tab Title="Custom Collections">
+        <Content>
+            <h2>Custom Collections</h2>
+
+            <div class="custom-collections-container">
+                <div class="custom-collections-controls">
+                    <Dropdown Size="Size.Small">
+                        <DropdownToggleButton Color="ButtonColor.Primary">Collections</DropdownToggleButton>
+                        <DropdownMenu>
+                            @foreach (var collection in ViewModel.CustomCollections)
+                            {
+                                <DropdownItem Type="ButtonType.Button"
+                                              @onclick="() => ViewModel.DisplayCollection(collection.Key)">
+                                    @collection.Key
+                                </DropdownItem>
+                            }
+                        </DropdownMenu>
+                    </Dropdown>
+                    <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="() => newCollectionModal.ShowAsync()">New Collection</Button>
+                    <Modal @ref="newCollectionModal" Title="Add New Collection" OnHidden="@ViewModel.OnCollectionModalHidden">
+                        <BodyTemplate>
+                            <label>Collection Name:</label>
+                            <InputText @bind-Value="@ViewModel.NewCollectionName" />
+                            @if (ViewModel.CollectionNameUnavailable)
+                            {
+                                <Alert Color="AlertColor.Danger">@ViewModel.CollectionNameError</Alert>
+                            }
+                        </BodyTemplate>
+                        <FooterTemplate>
+                            <Button Color="ButtonColor.Secondary"
+                                    @onclick="() => newCollectionModal.HideAsync()">
+                                Cancel
+                            </Button>
+                            <Button Color="ButtonColor.Primary"
+                                    @onclick="@ViewModel.CreateCollection">
+                                Create
+                            </Button>
+                        </FooterTemplate>
+                    </Modal>
+                </div>
+
+                @if (ViewModel.CurrentCustom != default)
+                {
+                    <PokemonCardsView ViewModel="@ViewModel.CurrentCustom" />
+                }
+            </div>
+        </Content>
+    </Tab>
 </Tabs>

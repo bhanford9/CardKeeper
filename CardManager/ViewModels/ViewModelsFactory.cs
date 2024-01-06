@@ -25,8 +25,10 @@ public class ViewModelsFactory(
     private readonly IStorageSpecFactory storageSpecFactory = storageSpecFactory;
     private readonly IServiceProvider serviceProvider = serviceProvider;
 
-    public IPokemonCollectionViewModel NewPokemonCollection(IPokemonCardCollection collection)
-        => new PokemonCollectionViewModel(this, collection);
+    public IPokemonCollectionViewModel NewPokemonCollection(IPokemonCardCollection? collection = null)
+        => collection == null
+         ? this.GetService<IPokemonCollectionViewModel>()
+         : new PokemonCollectionViewModel(this, collection);
 
     public IEditCardModalViewModel NewEditCardModal(Func<Task> onSubmit, Func<Task> onCancel)
         => new EditCardModalViewModel(onSubmit, onCancel);
@@ -91,5 +93,5 @@ public class ViewModelsFactory(
     public IMonetaryAggregateViewModel NewMonetaryAggregate(IMavinMonetaryData mavin)
         => new MonetaryAggregateViewModel(this, mavin);
 
-    private T GetService<T>() => this.serviceProvider.GetService<T>()!;
+    private T GetService<T>() where T : notnull => this.serviceProvider.GetRequiredService<T>()!;
 }
