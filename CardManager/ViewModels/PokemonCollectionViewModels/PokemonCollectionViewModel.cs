@@ -29,18 +29,19 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     event GridDataChangedHandler? GridDataChanged;
     event DeleteCardHandler? DeleteCard;
 
-    void AddCard(IPokemonCardViewModel? card = null);
+    Task AddCard(IPokemonCardViewModel? card = null);
     void SaveTable();
-    void RetrieveAppraisals();
-    void DuplicateSelectedCard();
+    Task RetrieveAppraisals();
+    Task DuplicateSelectedCard();
     Task DeleteSelectedCard();
     Task<GridDataProviderResult<IPokemonCardViewModel>> CardsDataProvider(
         GridDataProviderRequest<IPokemonCardViewModel> request);
     Task CardRowDoubleClicked(GridRowEventArgs<IPokemonCardViewModel> args);
     Task OnSelectedCardsChanged(HashSet<IPokemonCardViewModel> args);
-    void AddToCollection(IPokemonCollectionViewModel collection);
+    Task AddToCollection(IPokemonCollectionViewModel collection);
     void ShowCollections(bool doShow);
-    void LoadFromFile();
+    Task LoadFromFile();
+    Task AddCards(IEnumerable<IPokemonCardViewModel> cards);
 }
 
 public class PokemonCollectionViewModel
@@ -94,11 +95,22 @@ public class PokemonCollectionViewModel
         GridDataProviderRequest<IPokemonCardViewModel> request)
         => await Task.FromResult(request.ApplyTo(this.Cards));
 
-    public void AddCard(IPokemonCardViewModel? card = null)
+    public Task AddCard(IPokemonCardViewModel? card = null)
     {
         this.Cards.Add(card == null ? this.viewModelsFactory.NewPokemonCard() : card);
         this.Cards.Last().RowDataChanged += this.PokemonCollectionViewModelRowDataChanged;
-        this.PokemonCollectionViewModelRowDataChanged();
+        return this.PokemonCollectionViewModelRowDataChanged();
+    }
+
+    public Task AddCards(IEnumerable<IPokemonCardViewModel> cards)
+    {
+        foreach (var card in cards)
+        {
+            this.Cards.Add(card == null ? this.viewModelsFactory.NewPokemonCard() : card);
+            this.Cards.Last().RowDataChanged += this.PokemonCollectionViewModelRowDataChanged;
+        }
+
+        return this.PokemonCollectionViewModelRowDataChanged();
     }
 
     public void SaveTable()
@@ -107,14 +119,14 @@ public class PokemonCollectionViewModel
         this.pokemonCards.Save();
     }
 
-    public void RetrieveAppraisals()
+    public Task RetrieveAppraisals()
     {
         foreach (var card in this.Cards.Where(x => x.IsSelected))
         {
             card.RetrieveAppraisal();
         }
 
-        this.PokemonCollectionViewModelRowDataChanged();
+        return this.PokemonCollectionViewModelRowDataChanged();
     }
 
     public void ShowCollections(bool doShow)
@@ -122,21 +134,15 @@ public class PokemonCollectionViewModel
         this.CollectionsVisible = doShow;
     }
 
-    public void AddToCollection(IPokemonCollectionViewModel collection)
-    {
-        foreach (var card in this.Cards.Where(x => x.IsSelected))
-        {
-            collection.AddCard(card);
-        }
-    }
+    public Task AddToCollection(IPokemonCollectionViewModel collection)
+        => collection.AddCards(this.Cards.Where(x => x.IsSelected));
 
-    public void DuplicateSelectedCard()
+    public Task DuplicateSelectedCard()
     {
         var cardToDuplicate = this.Cards.First(c => c.IsSelected);
         var duplicatedCard = this.viewModelsFactory.NewPokemonCard(cardToDuplicate.ToModel().DeepCopy());
         this.Cards.Add(duplicatedCard);
-
-        this.PokemonCollectionViewModelRowDataChanged();
+        return this.PokemonCollectionViewModelRowDataChanged();
     }
 
     public async Task DeleteSelectedCard()
@@ -144,7 +150,7 @@ public class PokemonCollectionViewModel
         if (this.DeleteCard != null)
         {
             await this.DeleteCard.Invoke(this.Cards.First(c => c.IsSelected));
-            this.PokemonCollectionViewModelRowDataChanged();
+            await this.PokemonCollectionViewModelRowDataChanged();
         }
     }
 
@@ -166,18 +172,20 @@ public class PokemonCollectionViewModel
         return Task.CompletedTask;
     }
 
-    public void LoadFromFile()
+    public Task LoadFromFile()
     {
         this.pokemonCards.Load();
-        this.Cards = this.pokemonCards.Cards
-            .Select(viewModelsFactory.NewPokemonCard)
-            .ToList();
-        this.PokemonCollectionViewModelRowDataChanged();
+        this.Cards = this.pokemonCards.Cards.Select(viewModelsFactory.NewPokemonCard).ToList();
+        return this.PokemonCollectionViewModelRowDataChanged();
     }
 
-    private void PokemonCollectionViewModelRowDataChanged()
+    private async Task PokemonCollectionViewModelRowDataChanged()
     {
-        this.GridDataChanged?.Invoke();
+        if (this.GridDataChanged != null)
+        {
+            await this.GridDataChanged.Invoke();
+        }
+
         this.UpdateStats();
     }
 

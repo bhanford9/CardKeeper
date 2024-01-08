@@ -44,7 +44,7 @@ public class PokemonCardViewModel : BaseViewModel, IPokemonCardViewModel
     private readonly IViewModelsFactory viewModelsFactory;
     private readonly IStorageSpecFactory storageSpecFactory;
     private readonly IPokemonCard pokemonCardModel;
-    public delegate void RowDataChangedHandler();
+    public delegate Task RowDataChangedHandler();
 
     public event RowDataChangedHandler? RowDataChanged;
 
