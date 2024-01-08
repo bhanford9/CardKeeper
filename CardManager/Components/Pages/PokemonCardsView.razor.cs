@@ -25,18 +25,18 @@ public partial class PokemonCardsView : BaseView<IPokemonCollectionViewModel>, I
         this.ViewModel.DeleteCard -= this.OnDeleteCard;
     }
 
-    private async Task OnCardEditRequest(IPokemonCardViewModel card)
-    {
-        // TODO --> pass by reference means cancel will save data as well
-        await this.editCardModal.ShowAsync(card, onSubmit: this.OnGridDataChanged);
-    }
-
-    private async Task OnGridDataChanged()
+    public async Task OnGridDataChanged()
     {
         await this.cardsGrid.RefreshDataAsync();
 
         // lazily updating everything to get the totals and averages to update
         this.StateHasChanged();
+    }
+
+    private async Task OnCardEditRequest(IPokemonCardViewModel card)
+    {
+        // TODO --> pass by reference means cancel will save data as well
+        await this.editCardModal.ShowAsync(card, onSubmit: this.OnGridDataChanged);
     }
 
     private async Task OnDeleteCard(IPokemonCardViewModel card)

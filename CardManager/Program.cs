@@ -32,6 +32,7 @@ builder.Services
     //.AddTransient<IEditCardModalViewModel, EditCardModalViewModel>()
     .AddTransient<IPokemonCardViewModel, PokemonCardViewModel>()
     .AddTransient<IPokemonCollectionViewModel, PokemonCollectionViewModel>()
+    .AddTransient<IPokemonCustomCollectionViewModel, PokemonCustomCollectionViewModel>()
     .AddTransient(typeof(IEnumSelectorViewModel<>), typeof(EnumSelectorViewModel<>))
     .AddTransient<ISleeveLocationViewModel, SleeveLocationViewModel>()
     .AddTransient<IBoxLocationViewModel, BoxLocationViewModel>()

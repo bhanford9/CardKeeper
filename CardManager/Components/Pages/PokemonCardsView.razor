@@ -6,7 +6,7 @@
 
 @inherits BaseView<IPokemonCollectionViewModel>
 
-<h1>All Pokemon Cards</h1>
+<h2>@ViewModel.CollectionName</h2>
 
 <div class="card-grid-container">
     <Grid @ref="cardsGrid"
@@ -63,10 +63,11 @@
     <ConfirmDialog @ref="dialog" />
     <EditCardModal @ref="editCardModal"></EditCardModal>
 
-    <div class="card-table-buttons">
+    <div class="@(ViewModel.CanCreateCards ? "card-table-buttons" : "card-table-buttons-limited")">
         <Button Class="card-table-button card-add-button"
                 Color="ButtonColor.Primary"
                 Size="Size.Small"
+                hidden="@(!ViewModel.CanCreateCards)"
                 @onclick="() => ViewModel.AddCard()">
             Add Card
         </Button>

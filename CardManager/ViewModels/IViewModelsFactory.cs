@@ -28,7 +28,7 @@ public interface IViewModelsFactory
     IStorageMediaViewModel NewNoStorage(NoStorageMedia? none = null);
     IPokemonCardViewModel NewPokemonCard();
     IPokemonCardViewModel NewPokemonCard(IPokemonCard card);
-    IPokemonCollectionViewModel NewPokemonCollection(IPokemonCardCollection? collection = null);
+    IPokemonCustomCollectionViewModel NewCustomPokemonCollection(IPokemonCardCollection? collection = null);
     IPsaGradingViewModel NewPsaGrading(IPsaGrade model);
     ISleeveLocationViewModel NewSleeveLocation(ISleeveLocation? sleeve = null);
 }

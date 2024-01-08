@@ -21,6 +21,13 @@
   column-gap: 10px;
 }
 
+.card-table-buttons-limited {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 80px 140px 200px;
+  column-gap: 10px;
+}
+
 .card-table-button {
   margin: 8px 8px !important;
   justify-self: center;

@@ -1,6 +1,5 @@
 ﻿using BlazorBootstrap;
 using CardManager.Models.CardCollections;
-using CardManager.Models.Cards.PokemonCards;
 using static CardManager.ViewModels.PokemonCollectionViewModels.CardCollectionEvents;
 
 namespace CardManager.ViewModels.PokemonCollectionViewModels;
@@ -22,7 +21,9 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     double TotalAverage { get; set; }
     double TotalMax { get; set; }
     bool CollectionsVisible { get; set; }
-    Dictionary<string, IPokemonCollectionViewModel> CustomCollections { get; set; }
+    Dictionary<string, IPokemonCustomCollectionViewModel> CustomCollections { get; set; }
+    string CollectionName { get; set; }
+    bool CanCreateCards { get; }
 
     event EditCardPressedHandler? EditCardPressed;
     event GridDataChangedHandler? GridDataChanged;
@@ -64,7 +65,9 @@ public class PokemonCollectionViewModel
 
     public List<IPokemonCardViewModel> Cards { get; set; } = new();
 
-    public Dictionary<string, IPokemonCollectionViewModel> CustomCollections { get; set; } = new();
+    public Dictionary<string, IPokemonCustomCollectionViewModel> CustomCollections { get; set; } = new();
+
+    public string CollectionName { get; set; } = "All Pokemon Cards";
 
     public double AverageMin { get; set; }
 
@@ -80,6 +83,8 @@ public class PokemonCollectionViewModel
 
     public bool CollectionsVisible { get; set; }
 
+    public virtual bool CanCreateCards { get; } = true;
+
     public void Dispose()
     {
         this.Cards.ForEach(card => card.RowDataChanged -= this.PokemonCollectionViewModelRowDataChanged);
@@ -93,7 +98,7 @@ public class PokemonCollectionViewModel
     {
         this.Cards.Add(card == null ? this.viewModelsFactory.NewPokemonCard() : card);
         this.Cards.Last().RowDataChanged += this.PokemonCollectionViewModelRowDataChanged;
-        this.GridDataChanged?.Invoke();
+        this.PokemonCollectionViewModelRowDataChanged();
     }
 
     public void SaveTable()

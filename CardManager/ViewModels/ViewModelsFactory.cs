@@ -25,10 +25,10 @@ public class ViewModelsFactory(
     private readonly IStorageSpecFactory storageSpecFactory = storageSpecFactory;
     private readonly IServiceProvider serviceProvider = serviceProvider;
 
-    public IPokemonCollectionViewModel NewPokemonCollection(IPokemonCardCollection? collection = null)
+    public IPokemonCustomCollectionViewModel NewCustomPokemonCollection(IPokemonCardCollection? collection = null)
         => collection == null
-         ? this.GetService<IPokemonCollectionViewModel>()
-         : new PokemonCollectionViewModel(this, collection);
+         ? this.GetService<IPokemonCustomCollectionViewModel>()
+         : new PokemonCustomCollectionViewModel(this, collection);
 
     public IEditCardModalViewModel NewEditCardModal(Func<Task> onSubmit, Func<Task> onCancel)
         => new EditCardModalViewModel(onSubmit, onCancel);
