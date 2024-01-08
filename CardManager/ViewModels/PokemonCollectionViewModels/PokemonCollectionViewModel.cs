@@ -64,9 +64,9 @@ public class PokemonCollectionViewModel
 
     public Grid<IPokemonCardViewModel> GridReference { get; set; } = default!;
 
-    public List<IPokemonCardViewModel> Cards { get; set; } = new();
+    public List<IPokemonCardViewModel> Cards { get; set; } = [];
 
-    public Dictionary<string, IPokemonCustomCollectionViewModel> CustomCollections { get; set; } = new();
+    public Dictionary<string, IPokemonCustomCollectionViewModel> CustomCollections { get; set; } = [];
 
     public string CollectionName { get; set; } = "All Pokemon Cards";
 

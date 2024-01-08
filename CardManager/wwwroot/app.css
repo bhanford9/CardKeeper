@@ -24,12 +24,12 @@
 }
 
 .flex-container {
-  display: flex;
+  display: flex !important;
 }
 
 .flex-container-col {
-  display: flex;
-  flex-direction: column;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 .flex-child-col-1 {
@@ -38,27 +38,27 @@
 }
 
 .flex-child-1 {
-  flex: 1;
+  flex: 1 !important;
 }
 
 .flex-child-2 {
-  flex: 2;
+  flex: 2 !important;
 }
 
 .flex-child-3 {
-  flex: 3;
+  flex: 3 !important;
 }
 
 .flex-child-4 {
-  flex: 4;
+  flex: 4 !important;
 }
 
 .flex-child-5 {
-  flex: 5;
+  flex: 5 !important;
 }
 
 .flex-child-6 {
-  flex: 6;
+  flex: 6 !important;
 }
 
 .float-left-small-margin {

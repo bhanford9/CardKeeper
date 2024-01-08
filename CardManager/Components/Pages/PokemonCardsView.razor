@@ -122,45 +122,55 @@
         </div>
     </div>
 
-    <div class="card-stats-container flex-container">
-        <div class="stat-row-title-container flex-child-2 flex-container-col">
-            <div class="stat-header flex-child-1">Source</div>
-            <div class="stat-row-title flex-child-1">Mavin</div>
-        </div>
-        <div class="card-averages-container flex-container-col flex-child-5">
-            <div class="stat-header flex-child-1">Averages</div>
-            <div class="stats flex-container flex-child-3">
-                <div class="stat-item flex-container flex-child-1">
-                    <label class="flex-child-1">Min:</label>
-                    <div class="flex-child-3">$@ViewModel.AverageMin</div>
+    <Card>
+        <CardBody>
+            <div class="card-stats-container flex-container">
+                <div class="stat-row-title-container flex-child-2 flex-container-col">
+                    <div class="stat-header flex-child-1">Source</div>
+                    <ul class="list-group sources-list-group">
+                        <li class="list-group-item stats stat-row-title">Mavin</li>
+                    </ul>
                 </div>
-                <div class="stat-item flex-container flex-child-1">
-                    <label class="flex-child-1">Avg:</label>
-                    <div class="flex-child-3">$@ViewModel.AverageAverage</div>
+                <div class="card-averages-container flex-container-col flex-child-5">
+                    <div class="stat-header flex-child-1">Averages</div>
+                    <ul class="list-group average-list-group">
+                        <li class="list-group-item stats flex-container flex-child-3">
+                            <div class="stat-item flex-container flex-child-1">
+                                <label class="flex-child-1">Min:</label>
+                                <div class="flex-child-3">$@ViewModel.AverageMin</div>
+                            </div>
+                            <div class="stat-item flex-container flex-child-1">
+                                <label class="flex-child-1">Avg:</label>
+                                <div class="flex-child-3">$@ViewModel.AverageAverage</div>
+                            </div>
+                            <div class="stat-item flex-container flex-child-1">
+                                <label class="flex-child-1">Max:</label>
+                                <div class="flex-child-3">$@ViewModel.AverageMax</div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
-                <div class="stat-item flex-container flex-child-1">
-                    <label class="flex-child-1">Max:</label>
-                    <div class="flex-child-3">$@ViewModel.AverageMax</div>
+                <div class="card-totals-container flex-container-col flex-child-5">
+                    <div class="stat-header flex-child-1">Totals</div>
+                    <ul class="list-group totals-list-group">
+                        <li class="list-group-item stats flex-container flex-child-3">
+                            <div class="stat-item flex-container flex-child-1">
+                                <label class="flex-child-1">Min:</label>
+                                <div class="flex-child-3">$@ViewModel.TotalMin</div>
+                            </div>
+                            <div class="stat-item flex-container flex-child-1">
+                                <label class="flex-child-1">Avg:</label>
+                                <div class="flex-child-3">$@ViewModel.TotalAverage</div>
+                            </div>
+                            <div class="stat-item flex-container flex-child-1">
+                                <label class="flex-child-1">Max:</label>
+                                <div class="flex-child-3">$@ViewModel.TotalMax</div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
-        <div class="card-totals-container flex-container-col flex-child-5">
-            <div class="stat-header flex-child-1">Totals</div>
-            <div class="stats flex-container flex-child-3">
-                <div class="stat-item flex-container flex-child-1">
-                    <label class="flex-child-1">Min:</label>
-                    <div class="flex-child-3">$@ViewModel.TotalMin</div>
-                </div>
-                <div class="stat-item flex-container flex-child-1">
-                    <label class="flex-child-1">Avg:</label>
-                    <div class="flex-child-3">$@ViewModel.TotalAverage</div>
-                </div>
-                <div class="stat-item flex-container flex-child-1">
-                    <label class="flex-child-1">Max:</label>
-                    <div class="flex-child-3">$@ViewModel.TotalMax</div>
-                </div>
-            </div>
-        </div>
-    </div>
+        </CardBody>
+    </Card>
 </div>
 

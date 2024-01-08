@@ -1,12 +1,8 @@
 ﻿.stat-header {
   text-align: center;
   font-size: larger;
+  margin: 0px 6px 4px 6px;
   border-bottom: 2px solid black;
-}
-
-.stat-row-title-container, .card-averages-container, .card-totals-container {
-  margin-left: 6px;
-  margin-right: 6px;
 }
 
 .stat-row-title {
@@ -15,14 +11,14 @@
 }
 
 .card-table-buttons {
-  margin-top: 10px;
+  margin: 10px 0;
   display: grid;
   grid-template-columns: 80px 80px 140px 200px;
   column-gap: 10px;
 }
 
 .card-table-buttons-limited {
-  margin-top: 10px;
+  margin: 10px 0;
   display: grid;
   grid-template-columns: 80px 140px 200px;
   column-gap: 10px;
@@ -56,6 +52,11 @@
   margin: 0px;
   padding: 4px 10px;
   border: 0;
+}
+
+.stats {
+  height: 30px !important;
+  padding: 2px 10px !important;
 }
 
 .small-list-item:hover {
