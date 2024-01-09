@@ -1,5 +1,4 @@
 ﻿using BlazorBootstrap;
-using CardManager.ViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels;
 using Microsoft.AspNetCore.Components;
 

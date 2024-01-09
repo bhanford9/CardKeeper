@@ -16,10 +16,11 @@ public interface IPokemonCollectionsManagerViewModel : IViewModel
 }
 
 public class PokemonCollectionsManagerViewModel
-    : BaseViewModel, IPokemonCollectionsManagerViewModel
+    : BaseViewModel, IPokemonCollectionsManagerViewModel, IDisposable
 {
     private readonly IViewModelsFactory viewModelsFactory;
     private IPokemonCustomCollectionViewModel currentCustom = default!;
+    private const string DEFAULT_COLLECTION_NAME = "No Collection Selected";
 
     public event NewCollectionCreatedHandler? NewCollectionCreated;
 
@@ -28,10 +29,16 @@ public class PokemonCollectionsManagerViewModel
         IPokemonCollectionViewModel fullCollection)
     {
         this.viewModelsFactory = viewModelsFactory;
-        this.FullCollection = fullCollection;
-        this.FullCollection.LoadFromFile();
         this.CurrentCustom = this.viewModelsFactory.NewCustomPokemonCollection();
-        this.currentCustom.CollectionName = "No Collection Selected";
+        this.currentCustom.CollectionName = DEFAULT_COLLECTION_NAME;
+        this.FullCollection = fullCollection;
+        this.FullCollection.CustomCollectionsUpdated += this.FullCollectionCustomCollectionsUpdated;
+        this.FullCollection.LoadFromFile();
+    }
+
+    public void Dispose()
+    {
+        this.FullCollection.CustomCollectionsUpdated -= this.FullCollectionCustomCollectionsUpdated;
     }
 
     public IPokemonCollectionViewModel FullCollection { get; set; }
@@ -66,9 +73,21 @@ public class PokemonCollectionsManagerViewModel
         this.CurrentCustom = this.viewModelsFactory.NewCustomPokemonCollection();
         this.CurrentCustom.CollectionName = newName;
         this.CustomCollections.Add(newName, this.CurrentCustom);
+        this.CustomCollections.ToList().ForEach(kvp => kvp.Value.CustomCollections = this.CustomCollections);
         this.FullCollection.CustomCollections = this.CustomCollections;
         this.CurrentCustom.CustomCollections = this.CustomCollections;
 
         this.NewCollectionCreated?.Invoke();
+    }
+
+    private void FullCollectionCustomCollectionsUpdated()
+    {
+        if (this.CurrentCustom == default || this.CurrentCustom.CollectionName.Equals(DEFAULT_COLLECTION_NAME))
+        {
+            this.CustomCollections = this.FullCollection.CustomCollections;
+            this.CurrentCustom = this.CustomCollections.Values.FirstOrDefault()! ?? this.CurrentCustom!;
+            this.CurrentCustom.CustomCollections = this.CustomCollections;
+            this.NewCollectionCreated?.Invoke();
+        }
     }
 }

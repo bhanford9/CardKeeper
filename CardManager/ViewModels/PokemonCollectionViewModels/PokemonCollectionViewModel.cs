@@ -9,6 +9,7 @@ public class CardCollectionEvents
     public delegate Task EditCardPressedHandler(IPokemonCardViewModel card);
     public delegate Task GridDataChangedHandler();
     public delegate Task DeleteCardHandler(IPokemonCardViewModel card);
+    public delegate void CustomCollectionsUpdatedHandler();
 }
 
 public interface IPokemonCollectionViewModel : IViewModel, IDisposable
@@ -28,6 +29,7 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     event EditCardPressedHandler? EditCardPressed;
     event GridDataChangedHandler? GridDataChanged;
     event DeleteCardHandler? DeleteCard;
+    event CustomCollectionsUpdatedHandler? CustomCollectionsUpdated;
 
     Task AddCard(IPokemonCardViewModel? card = null);
     void SaveTable();
@@ -42,6 +44,7 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     void ShowCollections(bool doShow);
     Task LoadFromFile();
     Task AddCards(IEnumerable<IPokemonCardViewModel> cards);
+    Task PokemonCollectionViewModelRowDataChanged();
 }
 
 public class PokemonCollectionViewModel
@@ -53,6 +56,7 @@ public class PokemonCollectionViewModel
     public event EditCardPressedHandler? EditCardPressed;
     public event GridDataChangedHandler? GridDataChanged;
     public event DeleteCardHandler? DeleteCard;
+    public event CustomCollectionsUpdatedHandler? CustomCollectionsUpdated;
 
     public PokemonCollectionViewModel(
         IViewModelsFactory viewModelsFactory,
@@ -97,7 +101,7 @@ public class PokemonCollectionViewModel
 
     public Task AddCard(IPokemonCardViewModel? card = null)
     {
-        this.Cards.Add(card == null ? this.viewModelsFactory.NewPokemonCard() : card);
+        this.Cards.Add(card ?? this.viewModelsFactory.NewPokemonCard());
         this.Cards.Last().RowDataChanged += this.PokemonCollectionViewModelRowDataChanged;
         return this.PokemonCollectionViewModelRowDataChanged();
     }
@@ -106,7 +110,7 @@ public class PokemonCollectionViewModel
     {
         foreach (var card in cards)
         {
-            this.Cards.Add(card == null ? this.viewModelsFactory.NewPokemonCard() : card);
+            this.Cards.Add(card ?? this.viewModelsFactory.NewPokemonCard());
             this.Cards.Last().RowDataChanged += this.PokemonCollectionViewModelRowDataChanged;
         }
 
@@ -116,6 +120,12 @@ public class PokemonCollectionViewModel
     public void SaveTable()
     {
         this.pokemonCards.Cards = this.Cards.Select(x => x.ToModel()).ToList();
+
+
+        this.pokemonCards.CustomCollections = this.CustomCollections
+            .ToDictionary(x => x.Key, x => x.Value.Cards.Select(c => c.Id).ToList());
+
+
         this.pokemonCards.Save();
     }
 
@@ -176,10 +186,26 @@ public class PokemonCollectionViewModel
     {
         this.pokemonCards.Load();
         this.Cards = this.pokemonCards.Cards.Select(viewModelsFactory.NewPokemonCard).ToList();
+        this.CustomCollections = this.pokemonCards.CustomCollections
+            .ToDictionary(
+                collection => collection.Key,
+                collection =>
+                {
+                    var cards = collection.Value
+                        .Select(id => this.Cards.First(card => card.Id.Equals(id)))
+                        .ToList();
+                    var customCollection = viewModelsFactory.NewCustomPokemonCollection();
+                    customCollection.Cards = cards;
+                    customCollection.CollectionName = collection.Key;
+                    customCollection.PokemonCollectionViewModelRowDataChanged();
+                    return customCollection;
+                });
+
+        this.CustomCollectionsUpdated?.Invoke();
         return this.PokemonCollectionViewModelRowDataChanged();
     }
 
-    private async Task PokemonCollectionViewModelRowDataChanged()
+    public async Task PokemonCollectionViewModelRowDataChanged()
     {
         if (this.GridDataChanged != null)
         {
