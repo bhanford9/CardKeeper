@@ -9,7 +9,8 @@ public class CardCollectionEvents
     public delegate Task EditCardPressedHandler(IPokemonCardViewModel card);
     public delegate Task GridDataChangedHandler();
     public delegate Task DeleteCardHandler(IPokemonCardViewModel card);
-    public delegate void CustomCollectionsUpdatedHandler();
+    public delegate Task RemoveCardHandler(IPokemonCardViewModel card);
+    public delegate Task CustomCollectionsUpdatedHandler();
 }
 
 public interface IPokemonCollectionViewModel : IViewModel, IDisposable
@@ -22,17 +23,18 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     double TotalAverage { get; set; }
     double TotalMax { get; set; }
     bool CollectionsVisible { get; set; }
-    Dictionary<string, IPokemonCustomCollectionViewModel> CustomCollections { get; set; }
     string CollectionName { get; set; }
-    bool CanCreateCards { get; }
+    List<string> CollectionNames { get; set; }
+    ICollectionActionPermissionsViewModel CollectionPermissions { get; set; }
 
     event EditCardPressedHandler? EditCardPressed;
     event GridDataChangedHandler? GridDataChanged;
     event DeleteCardHandler? DeleteCard;
+    event RemoveCardHandler? RemoveCard;
     event CustomCollectionsUpdatedHandler? CustomCollectionsUpdated;
 
     Task AddCard(IPokemonCardViewModel? card = null);
-    void SaveTable();
+    void SaveFullCollection();
     Task RetrieveAppraisals();
     Task DuplicateSelectedCard();
     Task DeleteSelectedCard();
@@ -40,11 +42,15 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
         GridDataProviderRequest<IPokemonCardViewModel> request);
     Task CardRowDoubleClicked(GridRowEventArgs<IPokemonCardViewModel> args);
     Task OnSelectedCardsChanged(HashSet<IPokemonCardViewModel> args);
-    Task AddToCollection(IPokemonCollectionViewModel collection);
     void ShowCollections(bool doShow);
     Task LoadFromFile();
     Task AddCards(IEnumerable<IPokemonCardViewModel> cards);
     Task PokemonCollectionViewModelRowDataChanged();
+    Task OnGridDataChanged();
+    void AddToCollection(string name);
+    void SaveCustomCollection();
+    Task RemoveFromCollection(Guid id);
+    Task RemoveSelectedCard();
 }
 
 public class PokemonCollectionViewModel
@@ -52,25 +58,50 @@ public class PokemonCollectionViewModel
 {
     private readonly IViewModelsFactory viewModelsFactory;
     private readonly IPokemonCardCollection pokemonCards;
+    private event GridDataChangedHandler? gridDataChanged;
+    private event RemoveCardHandler? removeCard;
 
     public event EditCardPressedHandler? EditCardPressed;
-    public event GridDataChangedHandler? GridDataChanged;
     public event DeleteCardHandler? DeleteCard;
+    public event GridDataChangedHandler? GridDataChanged
+    {
+        add
+        {
+            if (!this.gridDataChanged?.GetInvocationList().Contains(value) ?? true)
+            {
+                this.gridDataChanged += value;
+            }
+        }
+        remove => this.gridDataChanged -= value;
+    }
+    public event RemoveCardHandler? RemoveCard
+    {
+        add
+        {
+            if (!this.removeCard?.GetInvocationList().Contains(value) ?? true)
+            {
+                this.removeCard += value;
+            }
+        }
+        remove => this.removeCard -= value;
+    }
     public event CustomCollectionsUpdatedHandler? CustomCollectionsUpdated;
 
     public PokemonCollectionViewModel(
         IViewModelsFactory viewModelsFactory,
-        IPokemonCardCollection pokemonCardCollection)
+        IPokemonCardCollection pokemonCardCollection,
+        IFullCollectionActionPermissionsViewModel permissions)
     {
         this.viewModelsFactory = viewModelsFactory;
         this.pokemonCards = pokemonCardCollection;
+        this.CollectionPermissions = permissions;
+        this.pokemonCards.CustomCollectionAdded += this.PokemonCardsCustomCollectionsChanged;
+        this.pokemonCards.CustomCollectionsChanged += this.PokemonCardsCustomCollectionsChanged;
     }
 
-    public Grid<IPokemonCardViewModel> GridReference { get; set; } = default!;
+    public List<string> CollectionNames { get; set; } = [];
 
     public List<IPokemonCardViewModel> Cards { get; set; } = [];
-
-    public Dictionary<string, IPokemonCustomCollectionViewModel> CustomCollections { get; set; } = [];
 
     public string CollectionName { get; set; } = "All Pokemon Cards";
 
@@ -88,11 +119,12 @@ public class PokemonCollectionViewModel
 
     public bool CollectionsVisible { get; set; }
 
-    public virtual bool CanCreateCards { get; } = true;
+    public ICollectionActionPermissionsViewModel CollectionPermissions { get; set; }
 
     public void Dispose()
     {
         this.Cards.ForEach(card => card.RowDataChanged -= this.PokemonCollectionViewModelRowDataChanged);
+        this.pokemonCards.CustomCollectionAdded -= this.PokemonCardsCustomCollectionsChanged;
     }
 
     public async Task<GridDataProviderResult<IPokemonCardViewModel>> CardsDataProvider(
@@ -117,16 +149,16 @@ public class PokemonCollectionViewModel
         return this.PokemonCollectionViewModelRowDataChanged();
     }
 
-    public void SaveTable()
+    public void SaveFullCollection()
     {
         this.pokemonCards.Cards = this.Cards.Select(x => x.ToModel()).ToList();
+        this.pokemonCards.SaveFullCollection();
+    }
 
-
-        this.pokemonCards.CustomCollections = this.CustomCollections
-            .ToDictionary(x => x.Key, x => x.Value.Cards.Select(c => c.Id).ToList());
-
-
-        this.pokemonCards.Save();
+    public void SaveCustomCollection()
+    {
+        this.pokemonCards.CustomCollections[this.CollectionName] = this.Cards.Select(c => c.Id).ToList();
+        this.pokemonCards.SaveCustomCollections();
     }
 
     public Task RetrieveAppraisals()
@@ -144,8 +176,15 @@ public class PokemonCollectionViewModel
         this.CollectionsVisible = doShow;
     }
 
-    public Task AddToCollection(IPokemonCollectionViewModel collection)
-        => collection.AddCards(this.Cards.Where(x => x.IsSelected));
+    public void AddToCollection(string name)
+        => this.pokemonCards.AddToCustomCollection(name, this.Cards.Where(x => x.IsSelected).Select(x => x.Id));
+
+    public Task RemoveFromCollection(Guid id)
+    {
+        this.Cards.Remove(this.Cards.First(c => c.Id.Equals(id)));
+        this.pokemonCards.RemoveFromCustomCollection(this.CollectionName, id);
+        return this.PokemonCollectionViewModelRowDataChanged();
+    }
 
     public Task DuplicateSelectedCard()
     {
@@ -160,6 +199,15 @@ public class PokemonCollectionViewModel
         if (this.DeleteCard != null)
         {
             await this.DeleteCard.Invoke(this.Cards.First(c => c.IsSelected));
+            await this.PokemonCollectionViewModelRowDataChanged();
+        }
+    }
+
+    public async Task RemoveSelectedCard()
+    {
+        if (this.removeCard != null)
+        {
+            await this.removeCard.Invoke(this.Cards.First(c => c.IsSelected));
             await this.PokemonCollectionViewModelRowDataChanged();
         }
     }
@@ -184,36 +232,19 @@ public class PokemonCollectionViewModel
 
     public Task LoadFromFile()
     {
-        this.pokemonCards.Load();
-        this.Cards = this.pokemonCards.Cards.Select(viewModelsFactory.NewPokemonCard).ToList();
-        this.CustomCollections = this.pokemonCards.CustomCollections
-            .ToDictionary(
-                collection => collection.Key,
-                collection =>
-                {
-                    var cards = collection.Value
-                        .Select(id => this.Cards.First(card => card.Id.Equals(id)))
-                        .ToList();
-                    var customCollection = viewModelsFactory.NewCustomPokemonCollection();
-                    customCollection.Cards = cards;
-                    customCollection.CollectionName = collection.Key;
-                    customCollection.PokemonCollectionViewModelRowDataChanged();
-                    return customCollection;
-                });
+        this.pokemonCards.LoadMasterCardList();
+        this.Cards = this.pokemonCards.Cards.Select(this.viewModelsFactory.NewPokemonCard).ToList();
 
-        this.CustomCollectionsUpdated?.Invoke();
         return this.PokemonCollectionViewModelRowDataChanged();
     }
 
     public async Task PokemonCollectionViewModelRowDataChanged()
     {
-        if (this.GridDataChanged != null)
-        {
-            await this.GridDataChanged.Invoke();
-        }
-
+        await this.OnGridDataChanged();
         this.UpdateStats();
     }
+
+    public virtual Task OnGridDataChanged() => this.gridDataChanged?.Invoke() ?? Task.CompletedTask;
 
     private void UpdateStats()
     {
@@ -224,4 +255,10 @@ public class PokemonCollectionViewModel
         this.TotalAverage = Math.Round(this.Cards.Sum(c => c.MonetaryData.MavinViewModel.AveragePrice), 2);
         this.TotalMax = Math.Round(this.Cards.Sum(c => c.MonetaryData.MavinViewModel.MaxPrice), 2);
     }
+
+    private void PokemonCardsCustomCollectionsChanged(string name) =>
+        this.CollectionNames = this.pokemonCards.CustomCollections.Keys.ToList();
+
+    private void PokemonCardsCustomCollectionsChanged() =>
+        this.CollectionNames = this.pokemonCards.CustomCollections.Keys.ToList();
 }

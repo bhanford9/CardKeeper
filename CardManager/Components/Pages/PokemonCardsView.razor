@@ -63,65 +63,94 @@
     <ConfirmDialog @ref="dialog" />
     <EditCardModal @ref="editCardModal"></EditCardModal>
 
-    <div class="@(ViewModel.CanCreateCards ? "card-table-buttons" : "card-table-buttons-limited")">
-        <Button Class="card-table-button card-add-button"
-                Color="ButtonColor.Primary"
-                Size="Size.Small"
-                hidden="@(!ViewModel.CanCreateCards)"
-                @onclick="() => ViewModel.AddCard()">
-            Add Card
-        </Button>
-        <Button Class="card-table-button card-save-button" Color="ButtonColor.Primary" Size="Size.Small" @onclick="ViewModel.SaveTable">Save</Button>
-        <Dropdown Class="card-table-button card-actions-button" Size="Size.Small">
-            <DropdownToggleButton Color="ButtonColor.Primary">Selected Actions</DropdownToggleButton>
-            <DropdownMenu>
-                <DropdownItem Type="ButtonType.Button"
-                              Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) != 1)"
-                              @onclick="ViewModel.DuplicateSelectedCard">
-                    Duplicate
-                </DropdownItem>
-                <DropdownItem Type="ButtonType.Button"
-                              Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) != 1)"
-                              @onclick="ViewModel.DeleteSelectedCard">
-                    Delete
-                </DropdownItem>
-                <DropdownItem Type="ButtonType.Button"
-                              Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) <= 0)"
-                              @onclick="ViewModel.RetrieveAppraisals">
-                    Retrieve Appraisals
-                </DropdownItem>
-                <DropdownItem Type="ButtonType.Button"
-                              Style="width: 200px!important; height: 32px;"
-                              Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) <= 0)"
-                              @onmouseover="(() => ViewModel.ShowCollections(true))"
-                              @onmouseleave="(() => ViewModel.ShowCollections(false))">
-                    <div class="flex-container">
-                        <label class="flex-child-6">Add to Collection</label>
-                        <label class="flex-child-1 align-right">></label>
-                    </div>
+    <div class="container card-action-buttons-container">
+        <div class="row justify-content-start">
+            <div class="col-auto">
+                <Button Color="ButtonColor.Primary"
+                        Size="Size.Small"
+                        hidden="@(!ViewModel.CollectionPermissions.CanAddNewCard)"
+                        @onclick="() => ViewModel.AddCard()">
+                    Add Card
+                </Button>
+            </div>
 
-                    @if (ViewModel.CollectionsVisible && ViewModel.CustomCollections.Count > 0)
-                    {
-                        <div class="card collections-sub-dropdown">
-                            <ul class="list-group list-group-flush">
-                                @foreach (var c in ViewModel.CustomCollections)
-                                {
-                                    <li class="list-group-item small-list-item"
-                                        @onclick="() => ViewModel.AddToCollection(c.Value)">
-                                        @c.Key
-                                    </li>
-                                }
-                            </ul>
+            <div class="col-auto">
+                <Button Color="ButtonColor.Primary"
+                        Size="Size.Small"
+                        hidden="@(!ViewModel.CollectionPermissions.CanSaveFullCollection)"
+                        @onclick="ViewModel.SaveFullCollection">
+                    Save Full Collection
+                </Button>
+            </div>
+
+            <div class="col-auto">
+                <Button Color="ButtonColor.Primary"
+                        Size="Size.Small"
+                        hidden="@(!ViewModel.CollectionPermissions.CanSaveCustomCollection)"
+                        @onclick="ViewModel.SaveCustomCollection">
+                    Save Custom Collection
+                </Button>
+            </div>
+            <Dropdown Class="col-auto" Size="Size.Small">
+                <DropdownToggleButton Color="ButtonColor.Primary">Selected Actions</DropdownToggleButton>
+                <DropdownMenu>
+                    <DropdownItem Type="ButtonType.Button"
+                                  Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) != 1)"
+                                  hidden="@(!ViewModel.CollectionPermissions.CanDuplicate)"
+                                  @onclick="ViewModel.DuplicateSelectedCard">
+                        Duplicate
+                    </DropdownItem>
+                    <DropdownItem Type="ButtonType.Button"
+                                  Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) != 1)"
+                                  hidden="@(!ViewModel.CollectionPermissions.CanDelete)"
+                                  @onclick="ViewModel.DeleteSelectedCard">
+                        Delete
+                    </DropdownItem>
+                    <DropdownItem Type="ButtonType.Button"
+                                  Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) != 1)"
+                                  hidden="@(!ViewModel.CollectionPermissions.CanRemoveFromCollection)"
+                                  @onclick="ViewModel.RemoveSelectedCard">
+                        Remove From Collection
+                    </DropdownItem>
+                    <DropdownItem Type="ButtonType.Button"
+                                  Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) <= 0)"
+                                  hidden="@(!ViewModel.CollectionPermissions.CanRetrieveAppraisals)"
+                                  @onclick="ViewModel.RetrieveAppraisals">
+                        Retrieve Appraisals
+                    </DropdownItem>
+                    <DropdownItem Type="ButtonType.Button"
+                                  Style="width: 200px!important; height: 32px;"
+                                  Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) <= 0)"
+                                  hidden="@(!ViewModel.CollectionPermissions.CanAddToCollection)"
+                                  @onmouseover="(() => ViewModel.ShowCollections(true))"
+                                  @onmouseleave="(() => ViewModel.ShowCollections(false))">
+                        <div class="flex-container">
+                            <label class="flex-child-6">Add to Collection</label>
+                            <label class="flex-child-1 align-right">></label>
                         </div>
-                    }
-                </DropdownItem>
-            </DropdownMenu>
-        </Dropdown>
-        <div class="card-list-summary-container">
-            <label>Total Cards: @ViewModel.Cards.Count</label>
+
+                        @if (ViewModel.CollectionsVisible && ViewModel.CollectionNames.Count > 0)
+                        {
+                            <div class="card collections-sub-dropdown">
+                                <ul class="list-group list-group-flush">
+                                    @foreach (var name in ViewModel.CollectionNames)
+                                    {
+                                        <li class="list-group-item small-list-item"
+                                            @onclick="() => ViewModel.AddToCollection(name)">
+                                            @name
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    </DropdownItem>
+                </DropdownMenu>
+            </Dropdown>
+            <div class="col-auto">
+                <label>Total Cards: @ViewModel.Cards.Count</label>
+            </div>
         </div>
     </div>
-
     <Card>
         <CardBody>
             <div class="card-stats-container flex-container">

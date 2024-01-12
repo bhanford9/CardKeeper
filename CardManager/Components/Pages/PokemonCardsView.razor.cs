@@ -13,16 +13,20 @@ public partial class PokemonCardsView : BaseView<IPokemonCollectionViewModel>, I
 
     protected override void OnInitialized()
     {
-        this.ViewModel.EditCardPressed += this.OnCardEditRequest;
+        this.AttachViewModel();
+    }
+
+    protected override void OnParametersSet()
+    {
+        this.ViewModel.RemoveCard += this.OnRemoveCard;
         this.ViewModel.GridDataChanged += this.OnGridDataChanged;
-        this.ViewModel.DeleteCard += this.OnDeleteCard;
+        this.cardsGrid?.RefreshDataAsync();
+        base.OnParametersSet();
     }
 
     public void Dispose()
     {
-        this.ViewModel.EditCardPressed -= this.OnCardEditRequest;
-        this.ViewModel.GridDataChanged -= this.OnGridDataChanged;
-        this.ViewModel.DeleteCard -= this.OnDeleteCard;
+        this.DetachViewModel();
     }
 
     public async Task OnGridDataChanged()
@@ -50,5 +54,34 @@ public partial class PokemonCardsView : BaseView<IPokemonCollectionViewModel>, I
         {
             this.ViewModel.Cards.Remove(card);
         }
+    }
+
+    private async Task OnRemoveCard(IPokemonCardViewModel card)
+    {
+        var isConfirmed = await this.dialog.ShowAsync(
+            title: "Are you sure you want to remove this card?",
+            message1: $"Card: {card.Name}, {card.Number}",
+            message2: $"Rarity: {card.Rarity}, {card.Holographic} Holo");
+
+        if (isConfirmed)
+        {
+            await this.ViewModel.RemoveFromCollection(card.Id);
+        }
+    }
+
+    private void AttachViewModel()
+    {
+        this.ViewModel.EditCardPressed += this.OnCardEditRequest;
+        this.ViewModel.GridDataChanged += this.OnGridDataChanged;
+        this.ViewModel.DeleteCard += this.OnDeleteCard;
+        this.ViewModel.RemoveCard += this.OnRemoveCard;
+    }
+
+    private void DetachViewModel()
+    {
+        this.ViewModel.EditCardPressed -= this.OnCardEditRequest;
+        this.ViewModel.GridDataChanged -= this.OnGridDataChanged;
+        this.ViewModel.DeleteCard -= this.OnDeleteCard;
+        this.ViewModel.RemoveCard -= this.OnRemoveCard;
     }
 }

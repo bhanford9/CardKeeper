@@ -16,19 +16,28 @@ using CardManager.ViewModels.StorageSpecViewModels;
 namespace CardManager.ViewModels;
 
 public class ViewModelsFactory(
-    //IWebScrapingService webScrapingService,
     IStorageSpecFactory storageSpecFactory,
     IServiceProvider serviceProvider)
     : IViewModelsFactory
 {
-    //private readonly IWebScrapingService webScrapingService = webScrapingService;
     private readonly IStorageSpecFactory storageSpecFactory = storageSpecFactory;
     private readonly IServiceProvider serviceProvider = serviceProvider;
 
-    public IPokemonCustomCollectionViewModel NewCustomPokemonCollection(IPokemonCardCollection? collection = null)
+    public IPokemonCollectionViewModel NewPokemonCollection(IPokemonCardCollection? collection = null)
+        => collection == null
+         ? this.GetService<IPokemonCollectionViewModel>()
+         : new PokemonCollectionViewModel(this, collection, this.GetService<IFullCollectionActionPermissionsViewModel>());
+
+    public IPokemonCustomCollectionViewModel NewPokemonCustomCollection(
+        IPokemonCardCollection? collection = null,
+        IPokemonCollectionViewModel? selectedCollection = null)
         => collection == null
          ? this.GetService<IPokemonCustomCollectionViewModel>()
-         : new PokemonCustomCollectionViewModel(this, collection);
+         : new PokemonCustomCollectionViewModel(
+             this,
+             collection,
+             selectedCollection ?? this.NewPokemonCollection(),
+             this.GetService<ICustomCollectionActionPermissionsViewModel>());
 
     public IEditCardModalViewModel NewEditCardModal(Func<Task> onSubmit, Func<Task> onCancel)
         => new EditCardModalViewModel(onSubmit, onCancel);

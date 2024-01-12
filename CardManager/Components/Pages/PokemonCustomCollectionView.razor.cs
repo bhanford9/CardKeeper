@@ -19,37 +19,41 @@ public partial class PokemonCustomCollectionView : BaseView<IPokemonCustomCollec
             if (this.viewModel != default)
             {
                 this.viewModel.NewCollectionSubmitted -= this.ViewModelNewCollectionSubmitted;
-                this.viewModel.GridDataChanged -= this.UpdateGrid;
             }
 
             this.viewModel = value;
 
             this.viewModel.NewCollectionSubmitted += this.ViewModelNewCollectionSubmitted;
-            this.viewModel.GridDataChanged += this.UpdateGrid;
+            this.StateHasChanged();
         }
     }
 
     public void Dispose()
     {
         this.ViewModel.NewCollectionSubmitted -= this.ViewModelNewCollectionSubmitted;
-        this.ViewModel.GridDataChanged -= this.UpdateGrid;
+        this.ViewModel.CollectionSelected -= this.ViewModelCollectionSelected;
     }
 
     protected override void OnInitialized()
     {
         this.ViewModel.NewCollectionSubmitted += this.ViewModelNewCollectionSubmitted;
-        this.ViewModel.GridDataChanged += this.UpdateGrid;
+        this.ViewModel.CollectionSelected += this.ViewModelCollectionSelected;
     }
 
-    private void ViewModelNewCollectionSubmitted()
+    private Task ViewModelCollectionSelected(string collectionName) => this.UpdateGrid();
+
+    private async Task ViewModelNewCollectionSubmitted()
     {
-        this.newCollectionModal.HideAsync();
-        this.StateHasChanged();
+        await this.newCollectionModal.HideAsync();
+        await this.UpdateGrid();
     }
 
     private async Task UpdateGrid()
     {
-        await this.cardsView.OnGridDataChanged();
-        this.StateHasChanged();
+        if (this.cardsView != null)
+        {
+            await this.cardsView.OnGridDataChanged();
+            this.StateHasChanged();
+        }
     }
 }
