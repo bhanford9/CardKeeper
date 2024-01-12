@@ -5,8 +5,10 @@ using CardManager.ViewModels;
 using CardManager.ViewModels.GradingViewModels;
 using CardManager.ViewModels.MonetaryViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels;
+using CardManager.ViewModels.PokemonCollectionViewModels.Filtering.FilterCriteria;
 using CardManager.ViewModels.StorageSpecViewModels;
 using CardManager.ViewModels.UtilityViewModels;
+using CardManager.ViewModels.UtilityViewModels.Filtering;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SerializationServices;
 using WebScraping;
@@ -38,6 +40,29 @@ builder.Services
     .AddTransient<IPokemonCollectionsManagerViewModel, PokemonCollectionsManagerViewModel>()
     .AddTransient<IFullCollectionActionPermissionsViewModel, FullCollectionActionPermissionsViewModel>()
     .AddTransient<ICustomCollectionActionPermissionsViewModel, CustomCollectionActionPermissionsViewModel>()
+
+    // Filtering
+    .AddTransient<IAddFilterViewModel, AddFilterViewModel>()
+    .AddTransient<IFilterCriteria, GradeCriteria>()
+    .AddTransient<IFilterCriteria, HolographicCriteria>()
+    .AddTransient<IFilterCriteria, MonetaryCriteria>()
+    .AddTransient<IFilterCriteria, NameFilterCriteria>()
+    .AddTransient<IFilterCriteria, NumberFilterCriteria>()
+    .AddTransient<IFilterCriteria, RarityCriteria>()
+    .AddTransient<IFilterCriteria, SeriesCriteria>()
+    .AddTransient<IFilterCriteria, StorageCriteria>()
+    .AddTransient<IFilterCriteria, TypeCriteria>()
+    .AddTransient<IFilterCriteria, YearFilterCriteria>()
+    .AddTransient<IGradeCriteria, GradeCriteria>()
+    .AddTransient<IHolographicCriteria, HolographicCriteria>()
+    .AddTransient<IMonetaryCriteria, MonetaryCriteria>()
+    .AddTransient<INameFilterCriteria, NameFilterCriteria>()
+    .AddTransient<INumberFilterCriteria, NumberFilterCriteria>()
+    .AddTransient<IRarityCriteria, RarityCriteria>()
+    .AddTransient<ISeriesCriteria, SeriesCriteria>()
+    .AddTransient<IStorageCriteria, StorageCriteria>()
+    .AddTransient<ITypeCriteria, TypeCriteria>()
+    .AddTransient<IYearFilterCriteria, YearFilterCriteria>()
     .RegisterModels()
     .RegisterWebScraping()
     .RegisterSerializationServices();

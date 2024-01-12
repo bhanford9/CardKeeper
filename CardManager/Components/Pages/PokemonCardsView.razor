@@ -1,4 +1,5 @@
 ﻿@* Usings *@
+@using CardManager.Components.UtilityViews
 @using CardManager.Models.Grading
 @using CardManager.Components.Pages.Modals
 @using CardManager.ViewModels.PokemonCollectionViewModels
@@ -6,7 +7,17 @@
 
 @inherits BaseView<IPokemonCollectionViewModel>
 
-<h2>@ViewModel.CollectionName</h2>
+<div class="container">
+    <div class="row">
+        <h2 class="col-auto">@ViewModel.CollectionName</h2>
+        <div class="col-auto">
+            <Button Color="ButtonColor.Primary" @onclick="@(() => ViewModel.OnAddFilterClicked())">
+                <Icon Name="IconName.FilterSquare" />
+            </Button>
+            <AddFilterModal @ref="addFilterModal" />
+        </div>
+    </div>
+</div>
 
 <div class="card-grid-container">
     <Grid @ref="cardsGrid"
@@ -61,7 +72,7 @@
     </Grid>
 
     <ConfirmDialog @ref="dialog" />
-    <EditCardModal @ref="editCardModal"></EditCardModal>
+    <EditCardModal @ref="editCardModal"/>
 
     <div class="container card-action-buttons-container">
         <div class="row justify-content-start">

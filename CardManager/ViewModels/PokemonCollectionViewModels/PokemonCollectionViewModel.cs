@@ -11,6 +11,7 @@ public class CardCollectionEvents
     public delegate Task DeleteCardHandler(IPokemonCardViewModel card);
     public delegate Task RemoveCardHandler(IPokemonCardViewModel card);
     public delegate Task CustomCollectionsUpdatedHandler();
+    public delegate Task AddFilterHandler();
 }
 
 public interface IPokemonCollectionViewModel : IViewModel, IDisposable
@@ -32,6 +33,7 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     event DeleteCardHandler? DeleteCard;
     event RemoveCardHandler? RemoveCard;
     event CustomCollectionsUpdatedHandler? CustomCollectionsUpdated;
+    event AddFilterHandler? AddFilter;
 
     Task AddCard(IPokemonCardViewModel? card = null);
     void SaveFullCollection();
@@ -51,6 +53,7 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     void SaveCustomCollection();
     Task RemoveFromCollection(Guid id);
     Task RemoveSelectedCard();
+    Task OnAddFilterClicked();
 }
 
 public class PokemonCollectionViewModel
@@ -86,6 +89,7 @@ public class PokemonCollectionViewModel
         remove => this.removeCard -= value;
     }
     public event CustomCollectionsUpdatedHandler? CustomCollectionsUpdated;
+    public event AddFilterHandler? AddFilter;
 
     public PokemonCollectionViewModel(
         IViewModelsFactory viewModelsFactory,
@@ -245,6 +249,8 @@ public class PokemonCollectionViewModel
     }
 
     public virtual Task OnGridDataChanged() => this.gridDataChanged?.Invoke() ?? Task.CompletedTask;
+
+    public Task OnAddFilterClicked() => this.AddFilter?.Invoke() ?? Task.CompletedTask;
 
     private void UpdateStats()
     {

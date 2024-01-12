@@ -1,5 +1,6 @@
 using BlazorBootstrap;
 using CardManager.Components.Pages.Modals;
+using CardManager.Components.UtilityViews;
 using CardManager.ViewModels.PokemonCollectionViewModels;
 
 namespace CardManager.Components.Pages;
@@ -8,6 +9,7 @@ public partial class PokemonCardsView : BaseView<IPokemonCollectionViewModel>, I
 {
     private ConfirmDialog dialog = new();
     private EditCardModal editCardModal = new();
+    private AddFilterModal addFilterModal = new();
     private Grid<IPokemonCardViewModel> cardsGrid = default!;
     private int[] pageSizeSelectors = [10, 20, 50];
 
@@ -43,6 +45,11 @@ public partial class PokemonCardsView : BaseView<IPokemonCollectionViewModel>, I
         await this.editCardModal.ShowAsync(card, onSubmit: this.OnGridDataChanged);
     }
 
+    private async Task OnAddFilter()
+    {
+        await this.addFilterModal.ShowAsync();
+    }
+
     private async Task OnDeleteCard(IPokemonCardViewModel card)
     {
         var isConfirmed = await this.dialog.ShowAsync(
@@ -75,6 +82,7 @@ public partial class PokemonCardsView : BaseView<IPokemonCollectionViewModel>, I
         this.ViewModel.GridDataChanged += this.OnGridDataChanged;
         this.ViewModel.DeleteCard += this.OnDeleteCard;
         this.ViewModel.RemoveCard += this.OnRemoveCard;
+        this.ViewModel.AddFilter += this.OnAddFilter;
     }
 
     private void DetachViewModel()
@@ -83,5 +91,6 @@ public partial class PokemonCardsView : BaseView<IPokemonCollectionViewModel>, I
         this.ViewModel.GridDataChanged -= this.OnGridDataChanged;
         this.ViewModel.DeleteCard -= this.OnDeleteCard;
         this.ViewModel.RemoveCard -= this.OnRemoveCard;
+        this.ViewModel.AddFilter -= this.OnAddFilter;
     }
 }
