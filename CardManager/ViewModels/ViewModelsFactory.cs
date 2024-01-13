@@ -12,6 +12,7 @@ using CardManager.ViewModels.ModalViewModels;
 using CardManager.ViewModels.MonetaryViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels;
 using CardManager.ViewModels.StorageSpecViewModels;
+using CardManager.ViewModels.UtilityViewModels.Filtering;
 
 namespace CardManager.ViewModels;
 
@@ -26,7 +27,11 @@ public class ViewModelsFactory(
     public IPokemonCollectionViewModel NewPokemonCollection(IPokemonCardCollection? collection = null)
         => collection == null
          ? this.GetService<IPokemonCollectionViewModel>()
-         : new PokemonCollectionViewModel(this, collection, this.GetService<IFullCollectionActionPermissionsViewModel>());
+         : new PokemonCollectionViewModel(
+             this,
+             collection,
+             this.GetService<IFullCollectionActionPermissionsViewModel>(),
+             this.GetService<IAddFilterViewModel>());
 
     public IPokemonCustomCollectionViewModel NewPokemonCustomCollection(
         IPokemonCardCollection? collection = null,

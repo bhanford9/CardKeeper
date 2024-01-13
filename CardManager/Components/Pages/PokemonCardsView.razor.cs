@@ -9,7 +9,7 @@ public partial class PokemonCardsView : BaseView<IPokemonCollectionViewModel>, I
 {
     private ConfirmDialog dialog = new();
     private EditCardModal editCardModal = new();
-    private AddFilterModal addFilterModal = new();
+    private AddFilterPopup addFilterPopup = new();
     private Grid<IPokemonCardViewModel> cardsGrid = default!;
     private int[] pageSizeSelectors = [10, 20, 50];
 
@@ -47,7 +47,6 @@ public partial class PokemonCardsView : BaseView<IPokemonCollectionViewModel>, I
 
     private async Task OnAddFilter()
     {
-        await this.addFilterModal.ShowAsync();
     }
 
     private async Task OnDeleteCard(IPokemonCardViewModel card)

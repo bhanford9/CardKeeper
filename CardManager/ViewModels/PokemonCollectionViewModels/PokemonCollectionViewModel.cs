@@ -1,5 +1,6 @@
 ﻿using BlazorBootstrap;
 using CardManager.Models.CardCollections;
+using CardManager.ViewModels.UtilityViewModels.Filtering;
 using static CardManager.ViewModels.PokemonCollectionViewModels.CardCollectionEvents;
 
 namespace CardManager.ViewModels.PokemonCollectionViewModels;
@@ -27,6 +28,7 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     string CollectionName { get; set; }
     List<string> CollectionNames { get; set; }
     ICollectionActionPermissionsViewModel CollectionPermissions { get; set; }
+    IAddFilterViewModel AddFilterViewModel { get; set; }
 
     event EditCardPressedHandler? EditCardPressed;
     event GridDataChangedHandler? GridDataChanged;
@@ -53,7 +55,9 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     void SaveCustomCollection();
     Task RemoveFromCollection(Guid id);
     Task RemoveSelectedCard();
-    Task OnAddFilterClicked();
+    void OnAddFilterClicked();
+
+    void DoNothing() { }
 }
 
 public class PokemonCollectionViewModel
@@ -94,13 +98,16 @@ public class PokemonCollectionViewModel
     public PokemonCollectionViewModel(
         IViewModelsFactory viewModelsFactory,
         IPokemonCardCollection pokemonCardCollection,
-        IFullCollectionActionPermissionsViewModel permissions)
+        IFullCollectionActionPermissionsViewModel permissions,
+        IAddFilterViewModel addFilterViewModel)
     {
         this.viewModelsFactory = viewModelsFactory;
         this.pokemonCards = pokemonCardCollection;
         this.CollectionPermissions = permissions;
+        this.AddFilterViewModel = addFilterViewModel;
         this.pokemonCards.CustomCollectionAdded += this.PokemonCardsCustomCollectionsChanged;
         this.pokemonCards.CustomCollectionsChanged += this.PokemonCardsCustomCollectionsChanged;
+        this.AddFilterViewModel.FilterApplied += this.AddFilterViewModelFilterApplied;
     }
 
     public List<string> CollectionNames { get; set; } = [];
@@ -124,6 +131,8 @@ public class PokemonCollectionViewModel
     public bool CollectionsVisible { get; set; }
 
     public ICollectionActionPermissionsViewModel CollectionPermissions { get; set; }
+
+    public IAddFilterViewModel AddFilterViewModel { get; set; }
 
     public void Dispose()
     {
@@ -250,7 +259,7 @@ public class PokemonCollectionViewModel
 
     public virtual Task OnGridDataChanged() => this.gridDataChanged?.Invoke() ?? Task.CompletedTask;
 
-    public Task OnAddFilterClicked() => this.AddFilter?.Invoke() ?? Task.CompletedTask;
+    public void OnAddFilterClicked() => this.AddFilterViewModel.IsHidden = false;
 
     private void UpdateStats()
     {
@@ -267,4 +276,9 @@ public class PokemonCollectionViewModel
 
     private void PokemonCardsCustomCollectionsChanged() =>
         this.CollectionNames = this.pokemonCards.CustomCollections.Keys.ToList();
+
+    private void AddFilterViewModelFilterApplied()
+    {
+
+    }
 }

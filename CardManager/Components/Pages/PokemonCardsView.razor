@@ -11,10 +11,13 @@
     <div class="row">
         <h2 class="col-auto">@ViewModel.CollectionName</h2>
         <div class="col-auto">
-            <Button Color="ButtonColor.Primary" @onclick="@(() => ViewModel.OnAddFilterClicked())">
-                <Icon Name="IconName.FilterSquare" />
-            </Button>
-            <AddFilterModal @ref="addFilterModal" />
+            <Dropdown Size="Size.Small" AutoClose=true AutoCloseBehavior="DropdownAutoCloseBehavior.Outside">
+                <DropdownToggleButton Color="ButtonColor.Primary"><Icon Name="IconName.FilterSquare" /></DropdownToggleButton>
+                <DropdownMenu Style="width: 400px; height: 400px;">
+                    <AddFilterPopup @ref="addFilterPopup" ViewModel="@ViewModel.AddFilterViewModel" />
+                </DropdownMenu>
+            </Dropdown>
+
         </div>
     </div>
 </div>
@@ -72,7 +75,7 @@
     </Grid>
 
     <ConfirmDialog @ref="dialog" />
-    <EditCardModal @ref="editCardModal"/>
+    <EditCardModal @ref="editCardModal" />
 
     <div class="container card-action-buttons-container">
         <div class="row justify-content-start">

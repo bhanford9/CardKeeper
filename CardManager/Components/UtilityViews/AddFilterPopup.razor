@@ -1,0 +1,88 @@
+﻿@using CardManager.Components.Pages
+@using CardManager.ViewModels.PokemonCollectionViewModels.Filtering.FilterCriteria
+@using CardManager.ViewModels.UtilityViewModels;
+@using CardManager.ViewModels.UtilityViewModels.Filtering
+
+@inherits BaseView<IAddFilterViewModel>
+
+
+<Card Class="card-container">
+    <CardHeader>
+        Add Filter
+    </CardHeader>
+    <CardBody>
+        <div class="container">
+            <div class="row bottom-50">
+                <div class="col-3">Filter On:</div>
+                <div class="col-4 w-50 mb-1">
+                    <Dropdown Size="Size.Small">
+                        <DropdownToggleButton Color="ButtonColor.Primary">
+                            @(ViewModel.SelectedFilterCriteria == null ? "Filter Criteria" : ViewModel.SelectedFilterCriteria.Name)
+                        </DropdownToggleButton>
+                        <DropdownMenu>
+                            @foreach (var filterCriteria in ViewModel.FilterCriteria)
+                            {
+                                <DropdownItem Type="ButtonType.Button"
+                                              @onclick="@(() => @ViewModel.SelectFilterCriteria(filterCriteria))">
+                                    @filterCriteria.Name
+                                </DropdownItem>
+                            }
+                        </DropdownMenu>
+                    </Dropdown>
+                </div>
+            </div>
+
+
+            @if (ViewModel.SelectedFilterCriteria is IFilterCriteria)
+            {
+                <div class="row">
+                    <div class="col-3">Where:</div>
+                    <div class="col-4 w-50 mb-1">
+                        <Dropdown Class="col-auto" Size="Size.Small">
+                            <DropdownToggleButton Color="ButtonColor.Primary">
+                                @(ViewModel.SelectedFilterCriteria == null || ViewModel.SelectedFilterCriteria.SelectedEvaluation == null
+                                    ? "Evaluation"
+                                    : ViewModel.SelectedFilterCriteria.SelectedEvaluation.Name)
+                            </DropdownToggleButton>
+                            <DropdownMenu>
+                                @foreach (var evaluation in ViewModel.SelectedFilterCriteria.Evaluations)
+                                {
+                                    <DropdownItem Type="ButtonType.Button"
+                                                  @onclick="@(() => @ViewModel.SelectedFilterCriteria.SelectEvaluation(evaluation))">
+                                        @evaluation.Name
+                                    </DropdownItem>
+                                }
+                            </DropdownMenu>
+                        </Dropdown>
+                    </div>
+                </div>
+
+                @if (ViewModel.SelectedFilterCriteria != null && ViewModel.SelectedFilterCriteria.SelectedEvaluation != null)
+                {
+                    <div class="row">
+                        <div class="col-3">Value:</div>
+                        @if (ViewModel.SelectedFilterCriteria.Type == FilterCriteriaType.String)
+                        {
+                            <InputText class="col-4" @bind-Value="@ViewModel.StringComparison" />
+                        }
+                        @if (ViewModel.SelectedFilterCriteria.Type == FilterCriteriaType.Integer)
+                        {
+                            <InputNumber class="col-4" TValue="int" @bind-Value="@ViewModel.IntegerComparison" />
+                        }
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">Result:</div>
+
+                        <div class="col-4">TBD</div>
+                    </div>
+                }
+            }
+        </div>
+    </CardBody>
+    <CardFooter>
+        <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="() => ViewModel.ApplyFilter()">
+            Apply
+        </Button>
+    </CardFooter>
+</Card>
