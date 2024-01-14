@@ -1,6 +1,10 @@
-﻿using BlazorBootstrap;
+﻿using System.Text;
+using BlazorBootstrap;
 using CardManager.Models.CardCollections;
+using CardManager.ViewModels.PokemonCollectionViewModels.Filtering;
+using CardManager.ViewModels.PokemonCollectionViewModels.Filtering.FilterCriteria;
 using CardManager.ViewModels.UtilityViewModels.Filtering;
+using CardManager.ViewModels.UtilityViewModels.Filtering.FilterEvaluations;
 using static CardManager.ViewModels.PokemonCollectionViewModels.CardCollectionEvents;
 
 namespace CardManager.ViewModels.PokemonCollectionViewModels;
@@ -29,6 +33,8 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     List<string> CollectionNames { get; set; }
     ICollectionActionPermissionsViewModel CollectionPermissions { get; set; }
     IAddFilterViewModel AddFilterViewModel { get; set; }
+    List<IPokemonCardViewModel> FilteredCards { get; set; }
+    List<StoredFilter> Filters { get; set; }
 
     event EditCardPressedHandler? EditCardPressed;
     event GridDataChangedHandler? GridDataChanged;
@@ -58,6 +64,8 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     void OnAddFilterClicked();
 
     void DoNothing() { }
+
+    Task RemoveFilter(StoredFilter filter);
 }
 
 public class PokemonCollectionViewModel
@@ -65,6 +73,8 @@ public class PokemonCollectionViewModel
 {
     private readonly IViewModelsFactory viewModelsFactory;
     private readonly IPokemonCardCollection pokemonCards;
+    private List<IPokemonCardViewModel> cards = [];
+
     private event GridDataChangedHandler? gridDataChanged;
     private event RemoveCardHandler? removeCard;
 
@@ -112,7 +122,21 @@ public class PokemonCollectionViewModel
 
     public List<string> CollectionNames { get; set; } = [];
 
-    public List<IPokemonCardViewModel> Cards { get; set; } = [];
+    public List<IPokemonCardViewModel> Cards
+    {
+        get => this.cards;
+        set
+        {
+            this.cards = value;
+            this.FilteredCards = this.Filters.Count != 0
+                ? this.Filters.SelectMany(f => f.Filter(this.cards)).ToList()
+                : this.cards;
+        }
+    }
+
+    public List<IPokemonCardViewModel> FilteredCards { get; set; } = [];
+
+    public List<StoredFilter> Filters { get; set; } = [];
 
     public string CollectionName { get; set; } = "All Pokemon Cards";
 
@@ -137,17 +161,20 @@ public class PokemonCollectionViewModel
     public void Dispose()
     {
         this.Cards.ForEach(card => card.RowDataChanged -= this.PokemonCollectionViewModelRowDataChanged);
+        // don't think this is necessary, but can't hurt
+        this.FilteredCards.ForEach(card => card.RowDataChanged -= this.PokemonCollectionViewModelRowDataChanged);
         this.pokemonCards.CustomCollectionAdded -= this.PokemonCardsCustomCollectionsChanged;
     }
 
     public async Task<GridDataProviderResult<IPokemonCardViewModel>> CardsDataProvider(
         GridDataProviderRequest<IPokemonCardViewModel> request)
-        => await Task.FromResult(request.ApplyTo(this.Cards));
+        => await Task.FromResult(request.ApplyTo(this.FilteredCards));
 
     public Task AddCard(IPokemonCardViewModel? card = null)
     {
         this.Cards.Add(card ?? this.viewModelsFactory.NewPokemonCard());
         this.Cards.Last().RowDataChanged += this.PokemonCollectionViewModelRowDataChanged;
+        this.ApplyFilters();
         return this.PokemonCollectionViewModelRowDataChanged();
     }
 
@@ -158,6 +185,8 @@ public class PokemonCollectionViewModel
             this.Cards.Add(card ?? this.viewModelsFactory.NewPokemonCard());
             this.Cards.Last().RowDataChanged += this.PokemonCollectionViewModelRowDataChanged;
         }
+
+        this.ApplyFilters();
 
         return this.PokemonCollectionViewModelRowDataChanged();
     }
@@ -170,7 +199,7 @@ public class PokemonCollectionViewModel
 
     public void SaveCustomCollection()
     {
-        this.pokemonCards.CustomCollections[this.CollectionName] = this.Cards.Select(c => c.Id).ToList();
+        this.pokemonCards.CustomCollections[this.CollectionName] = this.FilteredCards.Select(c => c.Id).ToList();
         this.pokemonCards.SaveCustomCollections();
     }
 
@@ -190,20 +219,23 @@ public class PokemonCollectionViewModel
     }
 
     public void AddToCollection(string name)
-        => this.pokemonCards.AddToCustomCollection(name, this.Cards.Where(x => x.IsSelected).Select(x => x.Id));
+        => this.pokemonCards.AddToCustomCollection(name, this.FilteredCards.Where(x => x.IsSelected).Select(x => x.Id));
 
     public Task RemoveFromCollection(Guid id)
     {
-        this.Cards.Remove(this.Cards.First(c => c.Id.Equals(id)));
+        var toRemove = this.FilteredCards.First(c => c.Id.Equals(id));
+        this.Cards.Remove(toRemove);
+        this.ApplyFilters();
         this.pokemonCards.RemoveFromCustomCollection(this.CollectionName, id);
         return this.PokemonCollectionViewModelRowDataChanged();
     }
 
     public Task DuplicateSelectedCard()
     {
-        var cardToDuplicate = this.Cards.First(c => c.IsSelected);
+        var cardToDuplicate = this.FilteredCards.First(c => c.IsSelected);
         var duplicatedCard = this.viewModelsFactory.NewPokemonCard(cardToDuplicate.ToModel().DeepCopy());
         this.Cards.Add(duplicatedCard);
+        this.ApplyFilters();
         return this.PokemonCollectionViewModelRowDataChanged();
     }
 
@@ -211,7 +243,7 @@ public class PokemonCollectionViewModel
     {
         if (this.DeleteCard != null)
         {
-            await this.DeleteCard.Invoke(this.Cards.First(c => c.IsSelected));
+            await this.DeleteCard.Invoke(this.FilteredCards.First(c => c.IsSelected));
             await this.PokemonCollectionViewModelRowDataChanged();
         }
     }
@@ -220,7 +252,7 @@ public class PokemonCollectionViewModel
     {
         if (this.removeCard != null)
         {
-            await this.removeCard.Invoke(this.Cards.First(c => c.IsSelected));
+            await this.removeCard.Invoke(this.FilteredCards.First(c => c.IsSelected));
             await this.PokemonCollectionViewModelRowDataChanged();
         }
     }
@@ -235,7 +267,7 @@ public class PokemonCollectionViewModel
 
     public Task OnSelectedCardsChanged(HashSet<IPokemonCardViewModel> args)
     {
-        foreach (var card in this.Cards)
+        foreach (var card in this.FilteredCards)
         {
             card.IsSelected = args.Contains(card);
         }
@@ -253,22 +285,29 @@ public class PokemonCollectionViewModel
 
     public async Task PokemonCollectionViewModelRowDataChanged()
     {
-        await this.OnGridDataChanged();
         this.UpdateStats();
+        await this.OnGridDataChanged();
     }
 
     public virtual Task OnGridDataChanged() => this.gridDataChanged?.Invoke() ?? Task.CompletedTask;
 
     public void OnAddFilterClicked() => this.AddFilterViewModel.IsHidden = false;
 
+    public async Task RemoveFilter(StoredFilter filter)
+    {
+        this.Filters.Remove(filter);
+        this.ApplyFilters();
+        await this.PokemonCollectionViewModelRowDataChanged();
+    }
+
     private void UpdateStats()
     {
-        this.AverageMin = Math.Round(this.Cards.Average(c => c.MonetaryData.MavinViewModel.MinPrice), 2);
-        this.AverageAverage = Math.Round(this.Cards.Average(c => c.MonetaryData.MavinViewModel.AveragePrice), 2);
-        this.AverageMax = Math.Round(this.Cards.Average(c => c.MonetaryData.MavinViewModel.MaxPrice), 2);
-        this.TotalMin = Math.Round(this.Cards.Sum(c => c.MonetaryData.MavinViewModel.MinPrice), 2);
-        this.TotalAverage = Math.Round(this.Cards.Sum(c => c.MonetaryData.MavinViewModel.AveragePrice), 2);
-        this.TotalMax = Math.Round(this.Cards.Sum(c => c.MonetaryData.MavinViewModel.MaxPrice), 2);
+        this.AverageMin = Math.Round(this.FilteredCards.Average(c => c.MonetaryData.MavinViewModel.MinPrice), 2);
+        this.AverageAverage = Math.Round(this.FilteredCards.Average(c => c.MonetaryData.MavinViewModel.AveragePrice), 2);
+        this.AverageMax = Math.Round(this.FilteredCards.Average(c => c.MonetaryData.MavinViewModel.MaxPrice), 2);
+        this.TotalMin = Math.Round(this.FilteredCards.Sum(c => c.MonetaryData.MavinViewModel.MinPrice), 2);
+        this.TotalAverage = Math.Round(this.FilteredCards.Sum(c => c.MonetaryData.MavinViewModel.AveragePrice), 2);
+        this.TotalMax = Math.Round(this.FilteredCards.Sum(c => c.MonetaryData.MavinViewModel.MaxPrice), 2);
     }
 
     private void PokemonCardsCustomCollectionsChanged(string name) =>
@@ -277,8 +316,42 @@ public class PokemonCollectionViewModel
     private void PokemonCardsCustomCollectionsChanged() =>
         this.CollectionNames = this.pokemonCards.CustomCollections.Keys.ToList();
 
-    private void AddFilterViewModelFilterApplied()
+    private async Task AddFilterViewModelFilterApplied()
     {
+        IFilterCriteria criteria = this.AddFilterViewModel.SelectedFilterCriteria;
+        IFilterEvaluationViewModel evaluation = this.AddFilterViewModel.SelectedFilterCriteria.SelectedEvaluation;
+        IComparable test = this.AddFilterViewModel.SelectedFilterCriteria switch
+        {
+            INameFilterCriteria => this.AddFilterViewModel.StringComparison,
+            INumberFilterCriteria number when number.IsString() => this.AddFilterViewModel.StringComparison,
+            INumberFilterCriteria number when !number.IsString() => this.AddFilterViewModel.IntegerComparison,
+            IYearFilterCriteria => this.AddFilterViewModel.IntegerComparison,
+            _ => throw new NotImplementedException(),
+        };
 
+        var stringified = new StringBuilder()
+            .Append(criteria.Name)
+            .Append(' ')
+            .Append(evaluation.Prefix.Length > 0 ? $"{evaluation.Prefix} " : evaluation.Prefix)
+            .Append(evaluation.Name)
+            .Append(' ')
+            .Append(test)
+            .ToString();
+        
+        IComparable valueGetter(IPokemonCardViewModel c) => criteria switch
+        {
+            INameFilterCriteria => c.Name,
+            INumberFilterCriteria => c.Number,
+            IYearFilterCriteria => c.CreationYear,
+            _ => throw new NotImplementedException(),
+        };
+
+        this.Filters.Add(new(evaluation.Passes, valueGetter, test, stringified));
+        this.ApplyFilters();
+        await this.PokemonCollectionViewModelRowDataChanged();
     }
+
+    private void ApplyFilters() => this.FilteredCards = this.Filters
+        .Aggregate(this.Cards.AsEnumerable(), (filteredCards, filter) => filter.Filter(filteredCards))
+        .ToList();
 }

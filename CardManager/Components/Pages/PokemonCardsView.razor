@@ -8,16 +8,35 @@
 @inherits BaseView<IPokemonCollectionViewModel>
 
 <div class="container">
-    <div class="row">
-        <h2 class="col-auto">@ViewModel.CollectionName</h2>
-        <div class="col-auto">
+    <div class="row header-row">
+        <h2 class="col-auto title">@ViewModel.CollectionName</h2>
+        <div class="col-auto centered-col">
             <Dropdown Size="Size.Small" AutoClose=true AutoCloseBehavior="DropdownAutoCloseBehavior.Outside">
                 <DropdownToggleButton Color="ButtonColor.Primary"><Icon Name="IconName.FilterSquare" /></DropdownToggleButton>
-                <DropdownMenu Style="width: 400px; height: 400px;">
+                <DropdownMenu Class="my-dropdown-menu" Style="width: 400px; height: 300px;">
                     <AddFilterPopup @ref="addFilterPopup" ViewModel="@ViewModel.AddFilterViewModel" />
                 </DropdownMenu>
             </Dropdown>
-
+        </div>
+        <div class="col-auto centered-col row">
+            @foreach (var filter in ViewModel.Filters)
+            {
+                <div class="col-auto container filter-container">
+                    <div class="row">
+                        <div class="col-auto filter-name">
+                            @filter.ToString()
+                        </div>
+                        <div class="col-auto remove-btn-col">
+                            <Button Color="ButtonColor.Danger"
+                                    Outline="true"
+                                    Size="Size.ExtraSmall"
+                                    @onclick="@(() => @ViewModel.RemoveFilter(filter))">
+                                <Icon Color="IconColor.Danger" Name="IconName.X" />
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -109,32 +128,32 @@
                 <DropdownToggleButton Color="ButtonColor.Primary">Selected Actions</DropdownToggleButton>
                 <DropdownMenu>
                     <DropdownItem Type="ButtonType.Button"
-                                  Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) != 1)"
+                                  Disabled="@(ViewModel.FilteredCards.Count(c => c.IsSelected) != 1)"
                                   hidden="@(!ViewModel.CollectionPermissions.CanDuplicate)"
                                   @onclick="ViewModel.DuplicateSelectedCard">
                         Duplicate
                     </DropdownItem>
                     <DropdownItem Type="ButtonType.Button"
-                                  Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) != 1)"
+                                  Disabled="@(ViewModel.FilteredCards.Count(c => c.IsSelected) != 1)"
                                   hidden="@(!ViewModel.CollectionPermissions.CanDelete)"
                                   @onclick="ViewModel.DeleteSelectedCard">
                         Delete
                     </DropdownItem>
                     <DropdownItem Type="ButtonType.Button"
-                                  Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) != 1)"
+                                  Disabled="@(ViewModel.FilteredCards.Count(c => c.IsSelected) != 1)"
                                   hidden="@(!ViewModel.CollectionPermissions.CanRemoveFromCollection)"
                                   @onclick="ViewModel.RemoveSelectedCard">
                         Remove From Collection
                     </DropdownItem>
                     <DropdownItem Type="ButtonType.Button"
-                                  Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) <= 0)"
+                                  Disabled="@(ViewModel.FilteredCards.Count(c => c.IsSelected) <= 0)"
                                   hidden="@(!ViewModel.CollectionPermissions.CanRetrieveAppraisals)"
                                   @onclick="ViewModel.RetrieveAppraisals">
                         Retrieve Appraisals
                     </DropdownItem>
                     <DropdownItem Type="ButtonType.Button"
                                   Style="width: 200px!important; height: 32px;"
-                                  Disabled="@(ViewModel.Cards.Count(c => c.IsSelected) <= 0)"
+                                  Disabled="@(ViewModel.FilteredCards.Count(c => c.IsSelected) <= 0)"
                                   hidden="@(!ViewModel.CollectionPermissions.CanAddToCollection)"
                                   @onmouseover="(() => ViewModel.ShowCollections(true))"
                                   @onmouseleave="(() => ViewModel.ShowCollections(false))">
@@ -161,7 +180,7 @@
                 </DropdownMenu>
             </Dropdown>
             <div class="col-auto">
-                <label>Total Cards: @ViewModel.Cards.Count</label>
+                <label>Total Cards: @ViewModel.FilteredCards.Count</label>
             </div>
         </div>
     </div>

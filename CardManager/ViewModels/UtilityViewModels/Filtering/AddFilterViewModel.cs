@@ -5,7 +5,7 @@ namespace CardManager.ViewModels.UtilityViewModels.Filtering;
 
 public class FilterViewModelEvents
 {
-    public delegate void FilterAppliedHandler();
+    public delegate Task FilterAppliedHandler();
 }
 
 public interface IAddFilterViewModel : IViewModel
@@ -14,7 +14,7 @@ public interface IAddFilterViewModel : IViewModel
     List<IFilterCriteria> FilterCriteria { get; }
     IFilterCriteria SelectedFilterCriteria { get; set; }
     string StringComparison { get; set; }
-    int IntegerComparison { get; set; }
+    int IntegerComparison { get; set; } 
     bool IsHidden { get; set; }
 
     void ApplyFilter();

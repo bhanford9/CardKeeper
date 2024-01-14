@@ -59,6 +59,7 @@ public partial class PokemonCardsView : BaseView<IPokemonCollectionViewModel>, I
         if (isConfirmed)
         {
             this.ViewModel.Cards.Remove(card);
+            this.ViewModel.FilteredCards.Remove(card);
         }
     }
 
