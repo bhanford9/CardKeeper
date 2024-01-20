@@ -72,6 +72,7 @@ builder.Services
     .AddTransient<IFilterPackageBuilder<IPokemonCardViewModel>, GraderNameFilterPackageBuilder>()
     .AddTransient<IFilterPackageBuilder<IPokemonCardViewModel>, TypeFilterPackageBuilder>()
     .AddTransient<IFilterPackageBuilder<IPokemonCardViewModel>, HolographicFilterPackageBuilder>()
+    .AddTransient<IFilterPackageBuilder<IPokemonCardViewModel>, RarityFilterPackageBuilder>()
     .AddTransient<INameFilterPackageBuilder, NameFilterPackageBuilder>()
     .AddTransient<INumberFilterPackageBuilder, NumberFilterPackageBuilder>()
     .AddTransient<IYearFilterPackageBuilder, YearFilterPackageBuilder>()
@@ -79,6 +80,7 @@ builder.Services
     .AddTransient<IGraderNameFilterPackageBuilder, GraderNameFilterPackageBuilder>()
     .AddTransient<ITypeFilterPackageBuilder, TypeFilterPackageBuilder>()
     .AddTransient<IHolographicFilterPackageBuilder, HolographicFilterPackageBuilder>()
+    .AddTransient<IRarityFilterPackageBuilder, RarityFilterPackageBuilder>()
     .AddSingleton(typeof(IFilterPackageBuilderRepository<>), typeof(FilterPackageBuilderRepository<>))
 
     .RegisterModels()
