@@ -1,4 +1,5 @@
-﻿using CardManager.ViewModels.UtilityViewModels.Filtering.FilterEvaluations;
+﻿using CardManager.Models.Cards.PokemonCards;
+using CardManager.ViewModels.UtilityViewModels.Filtering.FilterEvaluations;
 
 namespace CardManager.ViewModels.PokemonCollectionViewModels.Filtering.FilterCriteria;
 
@@ -9,5 +10,7 @@ public class TypeCriteria : BaseFilterCriteria, ITypeCriteria
 
     public override FilterCriteriaType Type { get; } = FilterCriteriaType.Collection;
 
-    public override IReadOnlyList<IFilterEvaluationViewModel> Evaluations { get; } = [];
+    public override IReadOnlyList<IFilterEvaluationViewModel> Evaluations { get; } = [
+        new EnumWithinEvaluation<ElementType>(),
+    ];
 }
