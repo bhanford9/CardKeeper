@@ -31,7 +31,7 @@ public static class ModelsContainer
         .AddTransient<ICard, PokemonCard>()
         .AddTransient<IPokemonCard, PokemonCard>()
         .AddTransient<ICardCollection<IPokemonCard, PokemonCardDto>, PokemonCardCollection>()
-        .AddTransient<IPokemonCardCollection, PokemonCardCollection>();
+        .AddSingleton<IPokemonCardCollection, PokemonCardCollection>();
 
     private static IServiceCollection AddCardSourcesData(this IServiceCollection builder)
         => builder
