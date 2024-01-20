@@ -7,6 +7,7 @@ public enum FilterCriteriaType
     TBD,
     String,
     Integer,
+    Collection,
 }
 
 public interface IFilterCriteria

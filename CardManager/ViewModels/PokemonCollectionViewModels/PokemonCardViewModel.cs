@@ -9,6 +9,7 @@ using CardManager.ViewModels.GradingViewModels;
 using CardManager.ViewModels.MonetaryViewModels;
 using CardManager.ViewModels.StorageSpecViewModels;
 using CardManager.ViewModels.UtilityViewModels;
+using CardManager.ViewModels.UtilityViewModels.Filtering.FilterPackageBuilding;
 using static CardManager.ViewModels.PokemonCollectionViewModels.PokemonCardViewModel;
 
 namespace CardManager.ViewModels.PokemonCollectionViewModels;

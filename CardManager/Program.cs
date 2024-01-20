@@ -6,9 +6,11 @@ using CardManager.ViewModels.GradingViewModels;
 using CardManager.ViewModels.MonetaryViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels;
 using CardManager.ViewModels.PokemonCollectionViewModels.Filtering.FilterCriteria;
+using CardManager.ViewModels.PokemonCollectionViewModels.Filtering.FilteringPackageBuilders;
 using CardManager.ViewModels.StorageSpecViewModels;
 using CardManager.ViewModels.UtilityViewModels;
 using CardManager.ViewModels.UtilityViewModels.Filtering;
+using CardManager.ViewModels.UtilityViewModels.Filtering.FilterPackageBuilding;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SerializationServices;
 using WebScraping;
@@ -43,7 +45,7 @@ builder.Services
 
     // Filtering
     .AddTransient<IAddFilterViewModel, AddFilterViewModel>()
-    .AddTransient<IFilterCriteria, GradeCriteria>()
+    .AddTransient<IFilterCriteria, GraderNameCriteria>()
     .AddTransient<IFilterCriteria, HolographicCriteria>()
     .AddTransient<IFilterCriteria, MonetaryCriteria>()
     .AddTransient<IFilterCriteria, NameFilterCriteria>()
@@ -53,7 +55,7 @@ builder.Services
     .AddTransient<IFilterCriteria, StorageCriteria>()
     .AddTransient<IFilterCriteria, TypeCriteria>()
     .AddTransient<IFilterCriteria, YearFilterCriteria>()
-    .AddTransient<IGradeCriteria, GradeCriteria>()
+    .AddTransient<IGraderNameCriteria, GraderNameCriteria>()
     .AddTransient<IHolographicCriteria, HolographicCriteria>()
     .AddTransient<IMonetaryCriteria, MonetaryCriteria>()
     .AddTransient<INameFilterCriteria, NameFilterCriteria>()
@@ -63,6 +65,18 @@ builder.Services
     .AddTransient<IStorageCriteria, StorageCriteria>()
     .AddTransient<ITypeCriteria, TypeCriteria>()
     .AddTransient<IYearFilterCriteria, YearFilterCriteria>()
+    .AddTransient<IFilterPackageBuilder<IPokemonCardViewModel>, NameFilterPackageBuilder>()
+    .AddTransient<IFilterPackageBuilder<IPokemonCardViewModel>, NumberFilterPackageBuilder>()
+    .AddTransient<IFilterPackageBuilder<IPokemonCardViewModel>, YearFilterPackageBuilder>()
+    .AddTransient<IFilterPackageBuilder<IPokemonCardViewModel>, SeriesFilterPackageBuilder>()
+    .AddTransient<IFilterPackageBuilder<IPokemonCardViewModel>, GraderNameFilterPackageBuilder>()
+    .AddTransient<INameFilterPackageBuilder, NameFilterPackageBuilder>()
+    .AddTransient<INumberFilterPackageBuilder, NumberFilterPackageBuilder>()
+    .AddTransient<IYearFilterPackageBuilder, YearFilterPackageBuilder>()
+    .AddTransient<ISeriesFilterPackageBuilder, SeriesFilterPackageBuilder>()
+    .AddTransient<IGraderNameFilterPackageBuilder, GraderNameFilterPackageBuilder>()
+    .AddSingleton(typeof(IFilterPackageBuilderRepository<>), typeof(FilterPackageBuilderRepository<>))
+
     .RegisterModels()
     .RegisterWebScraping()
     .RegisterSerializationServices();

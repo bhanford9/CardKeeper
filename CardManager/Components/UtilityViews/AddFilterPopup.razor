@@ -2,11 +2,12 @@
 @using CardManager.ViewModels.PokemonCollectionViewModels.Filtering.FilterCriteria
 @using CardManager.ViewModels.UtilityViewModels;
 @using CardManager.ViewModels.UtilityViewModels.Filtering
+@using CardManager.ViewModels.UtilityViewModels.Filtering.FilterEvaluations
 
 @inherits BaseView<IAddFilterViewModel>
 
 
-<Card Class="card-container">
+<Card Class="card-container" Style="margin-top: -9px; height: 300px;">
     <CardHeader>
         Add Filter
     </CardHeader>
@@ -14,8 +15,8 @@
         <div class="container">
             <div class="row bottom-50">
                 <div class="col-3">Filter On:</div>
-                <div class="col-4 w-50 mb-1">
-                    <Dropdown Size="Size.Small">
+                <div class="col-4 w-75 mb-1">
+                    <Dropdown Style="min-width: 100px;" Size="Size.Small">
                         <DropdownToggleButton Color="ButtonColor.Primary">
                             @(ViewModel.SelectedFilterCriteria == null ? "Filter Criteria" : ViewModel.SelectedFilterCriteria.Name)
                         </DropdownToggleButton>
@@ -37,8 +38,8 @@
             {
                 <div class="row">
                     <div class="col-3">Where:</div>
-                    <div class="col-4 w-50 mb-1">
-                        <Dropdown Class="col-auto" Size="Size.Small">
+                    <div class="col-4 w-75 mb-1">
+                        <Dropdown Style="min-width: 100px;" Size="Size.Small">
                             <DropdownToggleButton Color="ButtonColor.Primary">
                                 @(ViewModel.SelectedFilterCriteria == null || ViewModel.SelectedFilterCriteria.SelectedEvaluation == null
                                     ? "Evaluation"
@@ -68,6 +69,37 @@
                         @if (ViewModel.SelectedFilterCriteria.Type == FilterCriteriaType.Integer)
                         {
                             <InputNumber class="col-4" TValue="int" @bind-Value="@ViewModel.IntegerComparison" />
+                        }
+                        @if (ViewModel.SelectedFilterCriteria.Type == FilterCriteriaType.Collection)
+                        {
+                            <div class="col-4 w-75 mb-1">
+                                <Dropdown Style="min-width: 100px;" Size="Size.Small">
+                                    <DropdownToggleButton Color="ButtonColor.Primary">Select</DropdownToggleButton>
+                                    <DropdownMenu>
+                                        @if (ViewModel.SelectedFilterCriteria.SelectedEvaluation is IWithinEvaluation withinEval)
+                                        {
+                                            var options = withinEval.Options.ToList();
+                                            @for (int i = 0; i < options.Count; i++)
+                                            {
+                                                var iLocal = i;
+                                                <DropdownItem Type="ButtonType.Button">
+                                                    <div class="container">
+                                                        <div class="row">
+                                                            <InputCheckbox class="col-1"
+                                                                           @bind-Value="@(options[iLocal].IsChecked)"
+                                                                           @bind-Value:after="@(() => ViewModel.UpdateSelectedValues())"
+                                                                           DisplayName="@options[iLocal].ToString()" />
+                                                            <div class="col-6">
+                                                                @options[iLocal]
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </DropdownItem>
+                                            }
+                                        }
+                                    </DropdownMenu>
+                                </Dropdown>
+                            </div>
                         }
                     </div>
                 }

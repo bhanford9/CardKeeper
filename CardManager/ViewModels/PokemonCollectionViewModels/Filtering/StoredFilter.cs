@@ -1,13 +1,14 @@
-﻿namespace CardManager.ViewModels.PokemonCollectionViewModels.Filtering;
+﻿using CardManager.ViewModels.UtilityViewModels.Filtering.FilterPackageBuilding;
 
-public class StoredFilter(
-    Func<IComparable, IComparable, bool> passes,
-    Func<IPokemonCardViewModel, IComparable> getValue,
-    IComparable testValue,
-    string stringified)
+namespace CardManager.ViewModels.PokemonCollectionViewModels.Filtering;
+
+public class StoredFilter<TViewModel>(
+    Func<object, object, bool> passes,
+    IFilterPackage<TViewModel> filterPackage)
+    where TViewModel : IViewModel
 {
-    public IEnumerable<IPokemonCardViewModel> Filter(IEnumerable<IPokemonCardViewModel> cards)
-        => cards.Where(c => passes(getValue(c), testValue));
+    public IEnumerable<TViewModel> Filter(IEnumerable<TViewModel> cards)
+        => cards.Where(c => passes(filterPackage.ValueGetter(c), filterPackage.ValueToTest));
 
-    public override string ToString() => stringified;
+    public override string ToString() => filterPackage.Stringified;
 }

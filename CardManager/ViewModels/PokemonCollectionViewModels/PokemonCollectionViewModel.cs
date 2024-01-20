@@ -1,10 +1,13 @@
-﻿using System.Text;
+﻿using System.Collections;
+using System.Text;
 using BlazorBootstrap;
 using CardManager.Models.CardCollections;
+using CardManager.Models.Cards.PokemonCards;
 using CardManager.ViewModels.PokemonCollectionViewModels.Filtering;
 using CardManager.ViewModels.PokemonCollectionViewModels.Filtering.FilterCriteria;
 using CardManager.ViewModels.UtilityViewModels.Filtering;
 using CardManager.ViewModels.UtilityViewModels.Filtering.FilterEvaluations;
+using CardManager.ViewModels.UtilityViewModels.Filtering.FilterPackageBuilding;
 using static CardManager.ViewModels.PokemonCollectionViewModels.CardCollectionEvents;
 
 namespace CardManager.ViewModels.PokemonCollectionViewModels;
@@ -34,7 +37,7 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
     ICollectionActionPermissionsViewModel CollectionPermissions { get; set; }
     IAddFilterViewModel AddFilterViewModel { get; set; }
     List<IPokemonCardViewModel> FilteredCards { get; set; }
-    List<StoredFilter> Filters { get; set; }
+    List<StoredFilter<IPokemonCardViewModel>> Filters { get; set; }
 
     event EditCardPressedHandler? EditCardPressed;
     event GridDataChangedHandler? GridDataChanged;
@@ -65,7 +68,7 @@ public interface IPokemonCollectionViewModel : IViewModel, IDisposable
 
     void DoNothing() { }
 
-    Task RemoveFilter(StoredFilter filter);
+    Task RemoveFilter(StoredFilter<IPokemonCardViewModel> filter);
 }
 
 public class PokemonCollectionViewModel
@@ -73,6 +76,7 @@ public class PokemonCollectionViewModel
 {
     private readonly IViewModelsFactory viewModelsFactory;
     private readonly IPokemonCardCollection pokemonCards;
+    private readonly IFilterPackageBuilderRepository<IPokemonCardViewModel> filterRepo;
     private List<IPokemonCardViewModel> cards = [];
 
     private event GridDataChangedHandler? gridDataChanged;
@@ -109,10 +113,12 @@ public class PokemonCollectionViewModel
         IViewModelsFactory viewModelsFactory,
         IPokemonCardCollection pokemonCardCollection,
         IFullCollectionActionPermissionsViewModel permissions,
-        IAddFilterViewModel addFilterViewModel)
+        IAddFilterViewModel addFilterViewModel,
+        IFilterPackageBuilderRepository<IPokemonCardViewModel> filterRepo)
     {
         this.viewModelsFactory = viewModelsFactory;
         this.pokemonCards = pokemonCardCollection;
+        this.filterRepo = filterRepo;
         this.CollectionPermissions = permissions;
         this.AddFilterViewModel = addFilterViewModel;
         this.pokemonCards.CustomCollectionAdded += this.PokemonCardsCustomCollectionsChanged;
@@ -136,7 +142,7 @@ public class PokemonCollectionViewModel
 
     public List<IPokemonCardViewModel> FilteredCards { get; set; } = [];
 
-    public List<StoredFilter> Filters { get; set; } = [];
+    public List<StoredFilter<IPokemonCardViewModel>> Filters { get; set; } = [];
 
     public string CollectionName { get; set; } = "All Pokemon Cards";
 
@@ -293,7 +299,7 @@ public class PokemonCollectionViewModel
 
     public void OnAddFilterClicked() => this.AddFilterViewModel.IsHidden = false;
 
-    public async Task RemoveFilter(StoredFilter filter)
+    public async Task RemoveFilter(StoredFilter<IPokemonCardViewModel> filter)
     {
         this.Filters.Remove(filter);
         this.ApplyFilters();
@@ -318,35 +324,9 @@ public class PokemonCollectionViewModel
 
     private async Task AddFilterViewModelFilterApplied()
     {
-        IFilterCriteria criteria = this.AddFilterViewModel.SelectedFilterCriteria;
         IFilterEvaluationViewModel evaluation = this.AddFilterViewModel.SelectedFilterCriteria.SelectedEvaluation;
-        IComparable test = this.AddFilterViewModel.SelectedFilterCriteria switch
-        {
-            INameFilterCriteria => this.AddFilterViewModel.StringComparison,
-            INumberFilterCriteria number when number.IsString() => this.AddFilterViewModel.StringComparison,
-            INumberFilterCriteria number when !number.IsString() => this.AddFilterViewModel.IntegerComparison,
-            IYearFilterCriteria => this.AddFilterViewModel.IntegerComparison,
-            _ => throw new NotImplementedException(),
-        };
-
-        var stringified = new StringBuilder()
-            .Append(criteria.Name)
-            .Append(' ')
-            .Append(evaluation.Prefix.Length > 0 ? $"{evaluation.Prefix} " : evaluation.Prefix)
-            .Append(evaluation.Name)
-            .Append(' ')
-            .Append(test)
-            .ToString();
-        
-        IComparable valueGetter(IPokemonCardViewModel c) => criteria switch
-        {
-            INameFilterCriteria => c.Name,
-            INumberFilterCriteria => c.Number,
-            IYearFilterCriteria => c.CreationYear,
-            _ => throw new NotImplementedException(),
-        };
-
-        this.Filters.Add(new(evaluation.Passes, valueGetter, test, stringified));
+        IFilterPackage<IPokemonCardViewModel> filterPackage = this.filterRepo.GetFilterPackage(this.AddFilterViewModel);
+        this.Filters.Add(new(evaluation.Passes, filterPackage));
         this.ApplyFilters();
         await this.PokemonCollectionViewModelRowDataChanged();
     }

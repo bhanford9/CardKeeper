@@ -7,7 +7,7 @@ public class TypeCriteria : BaseFilterCriteria, ITypeCriteria
 {
     public override string Name { get; } = "Type";
 
-    public override FilterCriteriaType Type { get; } = FilterCriteriaType.TBD;
+    public override FilterCriteriaType Type { get; } = FilterCriteriaType.Collection;
 
     public override IReadOnlyList<IFilterEvaluationViewModel> Evaluations { get; } = [];
 }
