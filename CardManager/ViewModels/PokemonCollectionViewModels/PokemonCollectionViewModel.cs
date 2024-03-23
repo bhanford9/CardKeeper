@@ -1,10 +1,6 @@
-﻿using System.Collections;
-using System.Text;
-using BlazorBootstrap;
+﻿using BlazorBootstrap;
 using CardManager.Models.CardCollections;
-using CardManager.Models.Cards.PokemonCards;
 using CardManager.ViewModels.PokemonCollectionViewModels.Filtering;
-using CardManager.ViewModels.PokemonCollectionViewModels.Filtering.FilterCriteria;
 using CardManager.ViewModels.UtilityViewModels.Filtering;
 using CardManager.ViewModels.UtilityViewModels.Filtering.FilterEvaluations;
 using CardManager.ViewModels.UtilityViewModels.Filtering.FilterPackageBuilding;

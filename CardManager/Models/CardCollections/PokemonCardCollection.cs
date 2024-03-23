@@ -2,7 +2,6 @@
 using CardManager.SerializationDtos.Cards.PokemonCards;
 using CardManager.Services;
 using SerializationServices;
-using static CardManager.Models.CardCollections.PokemonCardCollectionEvents;
 
 namespace CardManager.Models.CardCollections;
 

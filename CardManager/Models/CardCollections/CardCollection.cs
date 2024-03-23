@@ -1,5 +1,4 @@
-﻿using System.Xml.Linq;
-using CardManager.Models.Cards;
+﻿using CardManager.Models.Cards;
 using CardManager.SerializationDtos;
 using SerializationServices;
 using static CardManager.Models.CardCollections.PokemonCardCollectionEvents;

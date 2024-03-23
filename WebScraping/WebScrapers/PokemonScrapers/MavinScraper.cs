@@ -16,20 +16,32 @@ internal class MavinScraper : WebScraper<MavinScrapingParams>
     {
         string searchParameters = $"{scraperParams.SearchName} {scraperParams.SearchNumber}";
         string encodedParams = HttpUtility.UrlEncode(searchParameters);
-        string url = $"{scraperParams.SearchUrl}{encodedParams}&bt=sold";
+        string url = $"{scraperParams.SearchUrl}{encodedParams}";
 
         HtmlWeb web = new();
         HtmlDocument doc = web.Load(url);
         HtmlNode worthBlock = doc.GetElementbyId("answer");
-        List<HtmlNode> worthItems = worthBlock.ChildNodes
-            .Where(x => x.NodeType == HtmlNodeType.Element)
-            .ToList();
+        List<HtmlNode> worthItems = [];
+
+        try
+        {
+            worthItems = worthBlock.ChildNodes
+                .Where(x => x.NodeType == HtmlNodeType.Element)
+                .ToList();
+        }
+        catch
+        {
+            return new ScrapingResult<MavinScrapeOutput>(false, new())
+            {
+                Failures = ["Problem parsing URL Nodes"]
+            };
+        }
 
         if (worthItems == null || worthItems.Count < 4)
         {
             return new ScrapingResult<MavinScrapeOutput>(false, new())
             {
-                Failures = new[] { "Failed to find summary text with 3 'a' tags." }
+                Failures = ["Failed to find summary text with 3 'a' tags."]
             };
         }
 

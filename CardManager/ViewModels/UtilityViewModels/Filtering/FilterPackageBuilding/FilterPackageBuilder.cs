@@ -1,5 +1,4 @@
-﻿using CardManager.ViewModels.PokemonCollectionViewModels;
-using CardManager.ViewModels.PokemonCollectionViewModels.Filtering.FilterCriteria;
+﻿using CardManager.ViewModels.PokemonCollectionViewModels.Filtering.FilterCriteria;
 using CardManager.ViewModels.UtilityViewModels.Filtering.FilterEvaluations;
 
 namespace CardManager.ViewModels.UtilityViewModels.Filtering.FilterPackageBuilding;
