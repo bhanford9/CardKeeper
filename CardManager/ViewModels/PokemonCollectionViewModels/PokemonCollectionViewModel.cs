@@ -207,7 +207,8 @@ public class PokemonCollectionViewModel
 
     public Task RetrieveAppraisals()
     {
-        foreach (var card in this.Cards.Where(x => x.IsSelected))
+        // if we scrape too often, websites don't like it, so limit it to 3
+        foreach (var card in this.Cards.Where(x => x.IsSelected).Take(3))
         {
             card.RetrieveAppraisal();
         }

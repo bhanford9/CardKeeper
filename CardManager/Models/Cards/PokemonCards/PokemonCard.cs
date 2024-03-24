@@ -53,8 +53,8 @@ public class PokemonCard(IWebScrapingService webScrapingService) : Card<PokemonC
             SearchNumber = this.Number,
         });
 
-        this.Monetary.Mavin.MaxPrice = result.MaxCard.SoldFor;
-        this.Monetary.Mavin.MinPrice = result.MinCard.SoldFor;
+        this.Monetary.Mavin.MaxPrice = result.MaxCard?.SoldFor ?? 0;
+        this.Monetary.Mavin.MinPrice = result.MinCard?.SoldFor ?? 0;
         this.Monetary.Mavin.AveragePrice = result.AverageWorth;
         this.AppraisalReceived?.Invoke();
     }

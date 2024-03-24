@@ -21,5 +21,5 @@ internal abstract class WebScraper<TScraperParams> : IWebScraper
 
     protected abstract bool InternalCanScrape(TScraperParams scraperParams);
 
-    protected abstract IScrapingResult InternalScrape(TScraperParams scraperParams);
+    protected abstract IScrapingResult InternalScrape(TScraperParams scraperParams, int attempt = 0);
 }

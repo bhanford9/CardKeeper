@@ -12,11 +12,11 @@ internal class MavinScraper : WebScraper<MavinScrapingParams>
         => !string.IsNullOrEmpty(scraperParams.SearchName)
         || !string.IsNullOrEmpty(scraperParams.SearchNumber);
 
-    protected override IScrapingResult InternalScrape(MavinScrapingParams scraperParams)
+    protected override IScrapingResult InternalScrape(MavinScrapingParams scraperParams, int attempt = 0)
     {
         string searchParameters = $"{scraperParams.SearchName} {scraperParams.SearchNumber}";
         string encodedParams = HttpUtility.UrlEncode(searchParameters);
-        string url = $"{scraperParams.SearchUrl}{encodedParams}";
+        string url = $"{scraperParams.SearchUrl}{encodedParams}&bt=sold";
 
         HtmlWeb web = new();
         HtmlDocument doc = web.Load(url);

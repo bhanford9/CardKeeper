@@ -148,7 +148,7 @@
                                   Disabled="@(ViewModel.FilteredCards.Count(c => c.IsSelected) <= 0)"
                                   hidden="@(!ViewModel.CollectionPermissions.CanRetrieveAppraisals)"
                                   @onclick="ViewModel.RetrieveAppraisals">
-                        Retrieve Appraisals
+                        Retrieve Appraisals (3 Max)
                     </DropdownItem>
                     <DropdownItem Type="ButtonType.Button"
                                   Style="width: 200px!important; height: 32px;"
